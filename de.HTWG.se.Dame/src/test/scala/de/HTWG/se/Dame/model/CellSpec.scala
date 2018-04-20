@@ -1,6 +1,6 @@
 package de.HTWG.se.Dame.model
 
-import de.htwg.de.dame.model.Cell
+import de.HTWG.se.Dame.model.enums.Color
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{Matchers, WordSpec}
