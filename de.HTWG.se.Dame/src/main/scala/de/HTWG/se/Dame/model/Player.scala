@@ -1,6 +1,6 @@
 package de.htwg.de.dame.model
 
 
-case class Player() {
+case class Player(name: String) {
 
 }
