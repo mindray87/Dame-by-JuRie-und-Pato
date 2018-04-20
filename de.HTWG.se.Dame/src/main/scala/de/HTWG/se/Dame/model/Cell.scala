@@ -1,10 +1,10 @@
 
-package de.htwg.de.dame.model
+package de.HTWG.se.Dame.model
 
-import de.HTWG.se.Dame.model.Color
+import de.HTWG.se.Dame.model.enums.Color.Color
 
 
 case class Cell(color: Color, val x: Int, val y: Int) {
-  val figure = None
+  val piece = None
 }
 
