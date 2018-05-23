@@ -1,5 +1,6 @@
 package de.HTWG.se.Dame
 
+import de.HTWG.se.Dame.model.enums.Color
 import de.HTWG.se.Dame.model.{Grid, Player}
 
 object Doughts {
@@ -9,7 +10,7 @@ object Doughts {
   def main(args: Array[String]): Unit = {
     val a = new Grid(8)
     println(a.cells)
-    val student = Player("Your Name")
+    val student = Player("Your Name", a, Color.White)
     println("Hello, " + student.name)
   }
 }
