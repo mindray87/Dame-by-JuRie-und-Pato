@@ -6,9 +6,8 @@ case class Grid(val size: Int) {
 
 
   var cells: scala.collection.immutable.Vector[Cell] = Vector()
-  var pieces: scala.collection.immutable.Vector[Piece] = Vector()
-  val p0 = new Player("Patrick")
-  val p1 = new Player("Julian")
+
+
 
 
   // Create Cells
@@ -30,11 +29,16 @@ case class Grid(val size: Int) {
     }
   }
 
-  // Create Pieces per Player
-  val countPieces = ((size - 2) / 2) * (size / 2)
-  for (a <- 1 to countPieces) {
-    pieces = pieces :+ new Piece(p0, PieceType.Men)
-    pieces = pieces :+ new Piece(p1, PieceType.Men)
+  def getCell(x: Int, y: Int): Option[Cell] = {
+
+    cells.foreach{
+      e=>
+        if (e.x == x && e.y == y)
+          return Some(e)
+    }
+    return None
   }
+
+
 
 }

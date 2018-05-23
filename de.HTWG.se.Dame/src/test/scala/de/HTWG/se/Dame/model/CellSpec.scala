@@ -32,11 +32,12 @@ class CellSpec extends WordSpec with Matchers {
         }
 
         "test piece" in {
-          val p = new Piece(new Player("Pato"), PieceType.Men)
+          val grid = new Grid(12)
+          val p = new Piece(new Player("Pato", grid, Color.White), PieceType.Men)
           blackcell.piece = Some(p)
           blackcell.piece should be(Some(p))
 
-          val q = new Piece(new Player("Juri"), PieceType.King)
+          val q = new Piece(new Player("Juri", grid, Color.White), PieceType.King)
           blackcell.piece = Some(q)
           blackcell.piece should be(Some(q))
         }
