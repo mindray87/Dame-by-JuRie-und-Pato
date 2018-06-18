@@ -2,7 +2,6 @@ package de.HTWG.se.Dame
 
 import de.HTWG.se.Dame.model.enums.Color
 import de.HTWG.se.Dame.model.{Grid, Player}
-import de.htwg.se.sudoku.aview.Tui
 
 import scala.io.StdIn.readLine
 
