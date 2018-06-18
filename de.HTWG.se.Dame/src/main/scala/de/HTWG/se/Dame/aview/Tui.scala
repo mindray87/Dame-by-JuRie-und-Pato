@@ -32,5 +32,5 @@ class Tui(controller: ControllerInterface) extends Reactor{
 
     }
   }
-  
+
 }
