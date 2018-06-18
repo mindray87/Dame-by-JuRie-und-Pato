@@ -7,8 +7,6 @@ import de.htwg.se.sudoku.aview.Tui
 import scala.io.StdIn.readLine
 
 object Doughts {
-  val tui = new Tui(controller)
-  controller.createNewGrid
 
   def main(args: Array[String]): Unit = {
     var input: String = ""

@@ -5,7 +5,7 @@ import de.HTWG.se.Dame.model.enums.{Color, PieceType}
 case class Grid(val size: Int) {
 
 
-  var cells: scala.collection.immutable.Vector[Cell] = Vector()
+  /*var cells: scala.collection.immutable.Vector[Cell] = Vector()
 
 
 
@@ -38,7 +38,7 @@ case class Grid(val size: Int) {
     }
     return None
   }
-
+*/
 
 
 }
