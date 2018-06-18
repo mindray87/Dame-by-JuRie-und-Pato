@@ -1,4 +1,4 @@
-package de.htwg.se.sudoku.controller.controllerComponent
+package de.htwg.se.dame.controller.controllerComponent
 
 object GameStatus extends Enumeration{
   type GameStatus = Value
