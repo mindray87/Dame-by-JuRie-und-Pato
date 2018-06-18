@@ -32,22 +32,5 @@ class Tui(controller: ControllerInterface) extends Reactor{
 
     }
   }
-
-  reactions += {
-    case event: GridSizeChanged => printTui
-    case event: CellChanged     => printTui
-    case event: CandidatesChanged => printCandidates
-  }
-
-  def printTui: Unit = {
-    println(controller.gridToString)
-    println(GameStatus.message(controller.gameStatus))
-  }
-
-  def printCandidates: Unit = {
-    println("Candidates: ")
-    for (row <- 0 until size; col <- 0 until size) {
-      if (controller.isShowCandidates(row, col)) println("("+row+","+col+"):"+controller.available(row, col).toList.sorted)
-    }
-  }
+  
 }
