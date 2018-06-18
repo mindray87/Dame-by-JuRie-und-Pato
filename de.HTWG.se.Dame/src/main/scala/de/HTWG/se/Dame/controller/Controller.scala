@@ -22,9 +22,7 @@ import de.HTWG.se.Dame.model.{Grid, Piece, Player}
 
 
     def move(x: Int, y: Int, p: Piece) : Unit = {
-      val opt = grid.getCell(x, y)
-      opt.get.piece = Option(p)
-      print()
+
     }
 
     def start() = {
