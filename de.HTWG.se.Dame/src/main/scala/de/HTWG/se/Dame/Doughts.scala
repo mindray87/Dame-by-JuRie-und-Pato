@@ -2,14 +2,22 @@ package de.HTWG.se.Dame
 
 import de.HTWG.se.Dame.model.enums.Color
 import de.HTWG.se.Dame.model.{Grid, Player}
+import de.htwg.se.sudoku.aview.Tui
+
+import scala.io.StdIn.readLine
 
 object Doughts {
-  val gridSize = 8
-
+  val tui = new Tui(controller)
+  controller.createNewGrid
 
   def main(args: Array[String]): Unit = {
-    val a = new Grid(8)
-    println(a.cells)
+    var input: String = ""
+
+    do {
+      input = readLine()
+      tui.processInputLine(input)
+    } while (input != "q")
+
     val student = Player("Your Name", a, Color.White)
     println("Hello, " + student.name)
   }
