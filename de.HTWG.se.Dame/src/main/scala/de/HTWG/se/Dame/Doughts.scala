@@ -2,7 +2,8 @@ package de.HTWG.se.Dame
 
 import scala.io.StdIn.readLine
 import de.HTWG.se.Dame.aview.Tui
-import de.HTWG.se.Dame.controller.Controller
+
+import de.HTWG.se.Dame.controller.controllerComponent.Controller
 
 object Doughts {
 
