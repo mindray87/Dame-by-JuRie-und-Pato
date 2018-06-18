@@ -18,14 +18,6 @@ class GridSpec extends WordSpec with Matchers {
         "have given size" in {
           biggrid.size should be(12)
         }
-
-        "have a getCell Method that returns the x & y coordinate of the cell" in {
-          val opt: Option[Cell] =  biggrid.getCell(4, 4)
-          biggrid.getCell(15, 5) should be(None)
-          opt.get.x should be(4)
-
-
-        }
       }
     }
   }
