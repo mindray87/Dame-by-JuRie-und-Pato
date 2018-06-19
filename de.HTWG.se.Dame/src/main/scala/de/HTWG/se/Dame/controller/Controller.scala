@@ -20,12 +20,17 @@ import de.HTWG.se.Dame.model.{Grid, Piece, Player}
       return pieces;
     }
 
+    def setInitialPiecePosition(p1: Player, p2 : Player) : Unit = {
+      // TODO: Patrick
+    }
+
 
     def move(x: Int, y: Int, p: Piece) : Unit = {
-
+      // TODO: Julian
     }
 
     def start() = {
+      setInitialPiecePosition(p1);
 
     }
 
