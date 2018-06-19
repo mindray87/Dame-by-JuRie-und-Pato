@@ -21,4 +21,6 @@ trait ControllerInterface {
   def move(x: Int, y: Int, p: Piece) : Unit
   def getPossibleMoves(piece : Piece) : Unit
 
+  def setInitialPiecePosition(p1: Player, p2 : Player) : Unit
+  def isOccupied(grid: Grid) : Unit
 }
