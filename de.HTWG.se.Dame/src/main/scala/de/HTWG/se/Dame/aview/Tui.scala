@@ -1,6 +1,7 @@
 package de.HTWG.se.Dame.aview
 
-import de.HTWG.se.Dame.controller.Controller
+import de.HTWG.se.Dame.controller.controllerComponent.Controller
+
 
 class Tui(controller : Controller){
 

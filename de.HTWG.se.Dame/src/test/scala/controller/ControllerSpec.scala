@@ -1,6 +1,7 @@
-package de.HTWG.se.Dame.controller
+package de.HTWG.se.Dame.controller.controllerComponent
 
-import de.HTWG.se.Dame.controller.Controller
+
+
 import org.scalatest.{Matchers, WordSpec}
 
 class ControllerSpec extends WordSpec with Matchers{
