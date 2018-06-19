@@ -18,7 +18,7 @@ trait ControllerInterface {
   def save : Unit
   def load : Unit
 
-  def move(x: Int, y: Int, p: Piece) : Unit
-  def getPossibleMoves(piece : Piece) : Unit
+  def move(x: Int, y: Int, p: Piece) : Boolean
+  def getPossibleMoves(piece : Piece) : List[(Int, Int)]
 
 }
