@@ -18,8 +18,7 @@ trait ControllerInterface {
   def save : Unit
   def load : Unit
 
-  def move : Unit
-
-  def possibleMovement : Unit
+  def move(x: Int, y: Int, p: Piece) : Unit
+  def getPossibleMoves(piece : Piece) : Unit
 
 }

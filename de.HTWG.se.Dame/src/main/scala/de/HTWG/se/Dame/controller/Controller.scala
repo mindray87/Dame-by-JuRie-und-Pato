@@ -1,8 +1,6 @@
 package de.HTWG.se.Dame.controller.controllerComponent
 import de.HTWG.se.Dame.model.enums.{Color, PieceType}
 import de.HTWG.se.Dame.model.{Grid, Piece, Player}
-import de.HTWG.se.Dame.controller.controllerComponent.ControllerInterface
-
 
   class Controller (p1Name : String, p2Name : String, gridSize : Integer) extends ControllerInterface{
 
@@ -22,11 +20,16 @@ import de.HTWG.se.Dame.controller.controllerComponent.ControllerInterface
       return pieces;
     }
 
-    def move(x: Int, y: Int, p: Piece) : Unit = {
+    def setInitialPiecePosition(p1: Player, p2 : Player) : Unit = {
+      // TODO: Patrick
+    }
 
+    def move(x: Int, y: Int, p: Piece) : Unit = {
+      // TODO: Julian
     }
 
     def start() = {
+      setInitialPiecePosition(player1, player2);
 
     }
 
@@ -38,9 +41,6 @@ import de.HTWG.se.Dame.controller.controllerComponent.ControllerInterface
       }
     }
 
-
-
-
     override def undo: Unit = {}
 
     override def redo: Unit = {}
@@ -48,11 +48,6 @@ import de.HTWG.se.Dame.controller.controllerComponent.ControllerInterface
     override def save: Unit = {}
 
     override def load: Unit = {}
-
-    override def move: Unit = {}
-
-    override def possibleMovement: Unit = {}
-
 
   }
 
