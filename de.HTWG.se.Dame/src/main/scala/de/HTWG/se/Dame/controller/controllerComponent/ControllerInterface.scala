@@ -2,6 +2,8 @@ package de.HTWG.se.Dame.controller.controllerComponent
 
 import de.HTWG.se.Dame.model.{Grid, Piece, Player}
 
+import scala.collection.mutable
+
 
 
 
@@ -11,7 +13,7 @@ trait ControllerInterface {
   def player1 : Player
   def player2 : Player
 
-  def createPieces(p: Player) : Vector[Piece]
+  def createPieces(p: Player) : mutable.MutableList[Piece]
 
   def undo : Unit
   def redo : Unit

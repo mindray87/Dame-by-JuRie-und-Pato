@@ -2,8 +2,9 @@ package de.HTWG.se.Dame.controller.controllerComponent
 
 import de.HTWG.se.Dame.model.enums.{Color, PieceType}
 import de.HTWG.se.Dame.model.{Grid, Piece, Player}
-import scala.util.control.Breaks._
 
+import scala.collection.mutable
+import scala.util.control.Breaks._
 import scala.collection.mutable.ListBuffer
 
 class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends ControllerInterface {
@@ -17,32 +18,35 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   player2.pieces = createPieces(player2)
 
 
-  override def createPieces(p: Player): Vector[Piece] = {
-    var pieces: scala.collection.immutable.Vector[Piece] = Vector()
+  override def createPieces(p: Player): mutable.MutableList[Piece] = {
+    var pieces = new mutable.MutableList[Piece]
     for (a <- 1 to initialPieceCount) {
-      pieces = pieces :+ new Piece(p, PieceType.Men)
+      pieces+=(new Piece(p, PieceType.Men))
     }
     return pieces;
   }
 
   override def setInitialPiecePosition(p1: Player, p2: Player): Unit = {
 
-    // 2D Array with size Gridsize * Gridsize
-    val field = Array.ofDim[Int](gridSize, gridSize)
+    // TODO: Clear the field
+
 
     // set Stones for player1
+    var p1PieceCount : Int = 0
     var a = 0
     while (a < gridSize / 2 - 1) {
       if (a % 2 == 0) {
         for (step <- Range(start = 0, end = gridSize, step = 2)) {
-          field(a)(step) = 1
-          println("feld an der Stelle " + a + step + " " + field(a)(step))
+          grid.field(a)(step) = p1.pieces.apply(p1PieceCount)
+          p1PieceCount = p1PieceCount + 1
+          println("feld an der Stelle " + a + step + " " + grid.field(a)(step))
         }
 
       }
       if (a % 2 == 1) {
         for (step <- Range(start = 1, end = gridSize, step = 2)) {
-          field(a)(step) = 1
+          grid.field(a)(step) = p1.pieces.apply(p1PieceCount)
+          p1PieceCount += 1
           // debug
           // println("feldungerade an der Stelle " + a + step + " " +field(a)(step))
         }
@@ -53,11 +57,14 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     }
 
     // set Stones for player2
+
+    var p2PieceCount = 0
     var b = gridSize / 2 + 1
     while (b < gridSize) {
       if (b % 2 == 0) {
         for (step <- Range(start = 0, end = gridSize, step = 2)) {
-          field(b)(step) = 1
+          grid.field(b)(step) = p2.pieces.apply(p1PieceCount)
+          p2PieceCount += 1
           // debug
           // println("feld an der Stelle " + b + step + " " +field(b)(step))
         }
@@ -65,11 +72,11 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
       }
       if (b % 2 == 1) {
         for (step <- Range(start = 1, end = gridSize, step = 2)) {
-          field(b)(step) = 1
+          grid.field(b)(step) = p2.pieces.apply(p1PieceCount)
+          p2PieceCount += 1
           // debug
           // println("feldungerade an der Stelle " + b + step + " " +field(b)(step))
         }
-
       }
       b += 1
       // debug
