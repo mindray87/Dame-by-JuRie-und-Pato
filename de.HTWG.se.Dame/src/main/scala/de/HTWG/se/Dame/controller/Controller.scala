@@ -2,6 +2,7 @@ package de.HTWG.se.Dame.controller.controllerComponent
 
 import de.HTWG.se.Dame.model.enums.{Color, PieceType}
 import de.HTWG.se.Dame.model.{Grid, Piece, Player}
+import scala.util.control.Breaks._
 
 import scala.collection.mutable.ListBuffer
 
@@ -15,6 +16,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   player1.pieces = createPieces(player1)
   player2.pieces = createPieces(player2)
 
+
   override def createPieces(p: Player): Vector[Piece] = {
     var pieces: scala.collection.immutable.Vector[Piece] = Vector()
     for (a <- 1 to initialPieceCount) {
@@ -23,13 +25,62 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     return pieces;
   }
 
-  def setInitialPiecePosition(p1: Player, p2: Player): Unit = {
-    // TODO: Patrick
+  override def setInitialPiecePosition(p1: Player, p2: Player): Unit = {
+
+    // 2D Array with size Gridsize * Gridsize
+    val field = Array.ofDim[Int](gridSize, gridSize)
+
+    // set Stones for player1
+    var a = 0
+    while (a < gridSize / 2 - 1) {
+      if (a % 2 == 0) {
+        for (step <- Range(start = 0, end = gridSize, step = 2)) {
+          field(a)(step) = 1
+          println("feld an der Stelle " + a + step + " " + field(a)(step))
+        }
+
+      }
+      if (a % 2 == 1) {
+        for (step <- Range(start = 1, end = gridSize, step = 2)) {
+          field(a)(step) = 1
+          // debug
+          // println("feldungerade an der Stelle " + a + step + " " +field(a)(step))
+        }
+      }
+      a += 1
+      //debug
+      // println(a)
+    }
+
+    // set Stones for player2
+    var b = gridSize / 2 + 1
+    while (b < gridSize) {
+      if (b % 2 == 0) {
+        for (step <- Range(start = 0, end = gridSize, step = 2)) {
+          field(b)(step) = 1
+          // debug
+          // println("feld an der Stelle " + b + step + " " +field(b)(step))
+        }
+
+      }
+      if (b % 2 == 1) {
+        for (step <- Range(start = 1, end = gridSize, step = 2)) {
+          field(b)(step) = 1
+          // debug
+          // println("feldungerade an der Stelle " + b + step + " " +field(b)(step))
+        }
+
+      }
+      b += 1
+      // debug
+      // println(b)
+    }
   }
+
 
   def move(x: Int, y: Int, p: Piece): Boolean = {
     val list = getPossibleMoves(p)
-    if(list.contains(Tuple2(x,y))){
+    if (list.contains(Tuple2(x, y))) {
       p.x = x;
       p.y = y;
       return true;
@@ -61,7 +112,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   def getPossibleMoves(piece: Piece): List[(Int, Int)] = {
     var list = new ListBuffer[(Int, Int)]()
 
-    if(piece.player.equals(player1)) {
+    if (piece.player.equals(player1)) {
       // Player1 bewegt sich in positive richtung
       if (piece.t == PieceType.Men) {
 
@@ -74,7 +125,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
         // Wenn dame dann alle möglichen positionen auf der diagonalen
 
       }
-    }else{
+    } else {
       // player2 bewegt sich in negative richtung
 
       if (piece.t == PieceType.Men) {
@@ -92,6 +143,8 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     }
     return list.toList
   }
+
+  override def isOccupied(grid: Grid): Unit = {}
 
   override def undo: Unit = {}
 
