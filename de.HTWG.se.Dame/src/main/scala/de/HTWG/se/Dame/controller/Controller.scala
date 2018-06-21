@@ -1,6 +1,6 @@
 package de.HTWG.se.Dame.controller.controllerComponent
 
-import de.HTWG.se.Dame.model.enums.{Color, PieceType}
+import de.HTWG.se.Dame.model.enums.{Color, GameState, PieceType}
 import de.HTWG.se.Dame.model.{Grid, Piece, Player}
 
 import scala.collection.mutable
@@ -13,6 +13,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   val player1: Player = new Player(p1Name, grid, Color.Black)
   val player2: Player = new Player(p2Name, grid, Color.White)
   val pieceCount = ((grid.size - 2) / 2) * (grid.size / 2)
+  var gameState = GameState.Player1
 
   player1.pieces = createPieces(player1)
   player2.pieces = createPieces(player2)
@@ -78,8 +79,9 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   def move(x: Int, y: Int, p: Piece): Boolean = {
     val list = getPossibleMoves(p)
     if (list.contains(Tuple2(x, y))) {
-      p.x = x;
-      p.y = y;
+      val n = grid.getCoordinates(p)
+      grid.field(n._1)(n._2) = null
+      grid.field(x)(y) = p
       return true;
     }
     return false;
@@ -93,17 +95,25 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
     setInitialPiecePosition(player1, player2);
 
-    // while( ! spiel beendet)
+    while (gameState != GameState.Finised) {
 
-    // Player1 am Zug
+      // TODO: notify gui's
 
-    // Player2 am Zug
+      break()
+    }
 
-    // Zeige ergebnis
+  }
 
-    // Nochmal ?
+  def getMessage(): String ={
+    gameState match{
+      case GameState.Player1 => return "It's " + player1.name + "'s turn. Please choose a piece."
+      case GameState.Player2 => return "It's " + player2.name + "'s turn. Please choose a piece."
+    }
 
+  }
 
+  def getPossibleMoves(x : Int, y : Int) : List[(Int, Int)] = {
+    return getPossibleMoves(grid.getPiece(x,y))
   }
 
   def getPossibleMoves(piece: Piece): List[(Int, Int)] = {
@@ -139,6 +149,10 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
     }
     return list.toList
+  }
+
+  def updateGameState(): Unit = {
+    // TODO: Implement
   }
 
   def showGrid(): String = {

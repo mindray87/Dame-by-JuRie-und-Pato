@@ -40,5 +40,16 @@ case class Grid(val size: Int) {
     }
     return sb.toString()
   }
+
+  def getCoordinates(p: Piece) : (Int, Int) = {
+    for(i <- field){
+      println(i.toString)
+    }
+    return (-1, -1)
+  }
+
+  def getPiece(x: Int, y : Int): Piece = {
+    return field(x)(y)
+  }
 }
 
