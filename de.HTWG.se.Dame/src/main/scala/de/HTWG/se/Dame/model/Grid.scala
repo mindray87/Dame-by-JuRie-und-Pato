@@ -9,8 +9,8 @@ case class Grid(val size: Int) {
 
   override def toString: String = {
     val sb = new mutable.StringBuilder()
-    for(i <- Range(0, field.length)){
-      for(j <- Range(0, field.length)){
+    for (i <- Range(0, field.length)) {
+      for (j <- Range(0, field.length)) {
         sb.append("| ")
         val p = field(i)(j)
         if (p != null) {
@@ -19,7 +19,7 @@ case class Grid(val size: Int) {
           } else {
             sb.append("X")
           }
-        }else{
+        } else {
           sb.append(" ")
         }
         sb.append(" ")
@@ -32,8 +32,8 @@ case class Grid(val size: Int) {
 
   def showGridNumbers: String = {
     val sb = new mutable.StringBuilder()
-    for(i <- Range(0, field.length)){
-      for(j <- Range(0, field.length)){
+    for (i <- Range(0, field.length)) {
+      for (j <- Range(0, field.length)) {
         sb.append("| ").append(i).append(j).append(" ")
       }
       sb.append("|\n")
@@ -41,14 +41,20 @@ case class Grid(val size: Int) {
     return sb.toString()
   }
 
-  def getCoordinates(p: Piece) : (Int, Int) = {
-    for(i <- field){
-      println(i.toString)
+  def getCoordinates(p: Piece): (Int, Int) = {
+    for (i <- Range(0, field.length)) {
+      for (j <- Range(0, field.length)) {
+        println(i + " " + j)
+        if (field(i)(j) != null)
+          if (field(i)(j) == p) {
+            return (i, j)
+          }
+      }
     }
     return (-1, -1)
   }
 
-  def getPiece(x: Int, y : Int): Piece = {
+  def getPiece(x: Int, y: Int): Piece = {
     return field(x)(y)
   }
 }

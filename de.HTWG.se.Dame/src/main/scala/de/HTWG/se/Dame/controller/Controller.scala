@@ -20,7 +20,6 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
   start()
 
-
   override def createPieces(p: Player): mutable.MutableList[Piece] = {
     var pieces = new mutable.MutableList[Piece]
     for (a <- 1 to pieceCount) {
@@ -95,12 +94,6 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
     setInitialPiecePosition(player1, player2);
 
-    while (gameState != GameState.Finised) {
-
-      // TODO: notify gui's
-
-      break()
-    }
 
   }
 
@@ -125,8 +118,9 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
         // kontrollieren, ob ein piece geschlagen werden kann
 
-        list += Tuple2(piece.x + 1, piece.y + 1)
-        list += Tuple2(piece.x - 1, piece.y + 1)
+        val coo = grid.getCoordinates(piece)
+        list += Tuple2(coo._1 + 1, coo._2 + 1)
+        list += Tuple2(coo._1  - 1, coo._2 + 1)
       } else {
 
         // Wenn dame dann alle möglichen positionen auf der diagonalen
@@ -139,8 +133,10 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
         // kontrollieren, ob ein piece geschlagen werden kann
 
-        list += Tuple2(piece.x + 1, piece.y - 1)
-        list += Tuple2(piece.x - 1, piece.y - 1)
+        val coo = grid.getCoordinates(piece)
+        println(coo)
+        list += Tuple2(coo._1 + 1, coo._2 + 1)
+        list += Tuple2(coo._1 - 1, coo._2 - 1)
       } else {
 
         // Wenn dame dann alle möglichen positionen auf der diagonalen
