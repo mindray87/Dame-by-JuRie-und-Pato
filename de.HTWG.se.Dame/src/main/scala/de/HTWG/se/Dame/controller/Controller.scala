@@ -4,10 +4,10 @@ import de.HTWG.se.Dame.model.enums.{Color, PieceType}
 import de.HTWG.se.Dame.model.{Grid, Piece, Player}
 
 import scala.collection.mutable
-import scala.util.control.Breaks._
 import scala.collection.mutable.ListBuffer
+import scala.swing._
 
-class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends ControllerInterface {
+class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends ControllerInterface  with Publisher{
 
   val grid: Grid = new Grid(gridSize)
   private val player1: Player = new Player(p1Name, grid, Color.Black, 1)
