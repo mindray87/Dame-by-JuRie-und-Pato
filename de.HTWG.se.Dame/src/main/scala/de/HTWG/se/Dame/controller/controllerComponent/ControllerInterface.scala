@@ -10,16 +10,13 @@ import scala.collection.mutable
 trait ControllerInterface {
   def grid : Grid
 
-  def player1 : Player
-  def player2 : Player
-
   def createPieces(p: Player) : mutable.MutableList[Piece]
 
   def undo : Unit
   def redo : Unit
   def save : Unit
   def load : Unit
-
+  def getPlayer(x: Int): Player
   def move(x: Int, y: Int, p: Piece) : Boolean
   def getPossibleMoves(piece : Piece) : List[(Int, Int)]
 

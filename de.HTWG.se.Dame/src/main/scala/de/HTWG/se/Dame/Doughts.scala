@@ -11,12 +11,12 @@ object Doughts {
   def main(args: Array[String]): Unit = {
 
     var input: String = ""
-    val gridSize = 8
+    val gridSize = 10
     val grid = new Grid(gridSize)
 
     val controll = new Controller("Julian", "Patrick", gridSize)
     val tui = new Tui(controll)
-
+    println(grid.showGridNumbers)
     do {
       print("Your input: ")
       input = readLine()

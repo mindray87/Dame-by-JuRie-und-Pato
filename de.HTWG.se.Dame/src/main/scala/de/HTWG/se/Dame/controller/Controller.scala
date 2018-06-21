@@ -10,8 +10,8 @@ import scala.collection.mutable.ListBuffer
 class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends ControllerInterface {
 
   val grid: Grid = new Grid(gridSize)
-  val player1: Player = new Player(p1Name, grid, Color.Black)
-  val player2: Player = new Player(p2Name, grid, Color.White)
+  private val player1: Player = new Player(p1Name, grid, Color.Black, 1)
+  private val player2: Player = new Player(p2Name, grid, Color.White, 2)
   val pieceCount = ((grid.size - 2) / 2) * (grid.size / 2)
 
   player1.pieces = createPieces(player1)
@@ -143,6 +143,15 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
   def showGrid(): String = {
     return grid.toString()
+  }
+
+  def getPlayer(x: Int): Player = {
+    if(x == 1)
+      return player1
+    else if(x == 2)
+      return player2
+    else
+      return null
   }
 
   override def isOccupied(grid: Grid): Unit = {}

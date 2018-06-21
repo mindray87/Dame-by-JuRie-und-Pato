@@ -11,8 +11,8 @@ class PieceSpec extends WordSpec with Matchers {
     "instanciated" should {
       "be created with the player owning the figure and the type" should {
         val grid = new Grid(12)
-        val pato = new Player("Pato", grid, Color.White)
-        val juri = new Player("Juri", grid, Color.White)
+        val pato = new Player("Pato", grid, Color.White, 1)
+        val juri = new Player("Juri", grid, Color.White, 2)
 
         val whitemen = new Piece(pato.number, PieceType.Men)
         val blackking = new Piece(juri.number, PieceType.King)
@@ -23,8 +23,8 @@ class PieceSpec extends WordSpec with Matchers {
         }
 
         "should have the given player" in {
-          whitemen.player should be(pato)
-          blackking.player should be(juri)
+          whitemen.player should be(1)
+          blackking.player should be(2)
         }
       }
     }
