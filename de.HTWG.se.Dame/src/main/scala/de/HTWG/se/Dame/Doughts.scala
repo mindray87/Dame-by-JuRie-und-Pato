@@ -14,16 +14,14 @@ object Doughts {
     val gridSize = 8
     val grid = new Grid(gridSize)
 
-    val player1 = new Player("Julian", grid, Color.White)
-    val player2 = new Player("Patrick", grid, Color.Black)
     val controll = new Controller("Julian", "Patrick", gridSize)
     val tui = new Tui(controll)
 
-    controll.setInitialPiecePosition(player1, player2)
     do {
-      println("Your input: ")
+      print("Your input: ")
       input = readLine()
       tui.processInputLine(input)
+      print("\n")
     } while (input != "q")
   }
 }

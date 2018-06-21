@@ -12,16 +12,18 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   val grid: Grid = new Grid(gridSize)
   val player1: Player = new Player(p1Name, grid, Color.Black)
   val player2: Player = new Player(p2Name, grid, Color.White)
-  val initialPieceCount = ((grid.size - 2) / 2) * (grid.size / 2)
+  val pieceCount = ((grid.size - 2) / 2) * (grid.size / 2)
 
   player1.pieces = createPieces(player1)
   player2.pieces = createPieces(player2)
 
+  start()
+
 
   override def createPieces(p: Player): mutable.MutableList[Piece] = {
     var pieces = new mutable.MutableList[Piece]
-    for (a <- 1 to initialPieceCount) {
-      pieces+=(new Piece(p, PieceType.Men))
+    for (a <- 1 to pieceCount) {
+      pieces += (new Piece(p.number, PieceType.Men))
     }
     return pieces;
   }
@@ -32,28 +34,22 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
 
     // set Stones for player1
-    var p1PieceCount : Int = 0
+    var p1PieceCount: Int = 0
     var a = 0
-    while (a < gridSize / 2 - 1) {
+    while (a < (gridSize / 2) - 1) {
       if (a % 2 == 0) {
         for (step <- Range(start = 0, end = gridSize, step = 2)) {
           grid.field(a)(step) = p1.pieces.apply(p1PieceCount)
-          p1PieceCount = p1PieceCount + 1
-          println("feld an der Stelle " + a + step + " " + grid.field(a)(step))
+          p1PieceCount += 1
         }
-
       }
       if (a % 2 == 1) {
         for (step <- Range(start = 1, end = gridSize, step = 2)) {
           grid.field(a)(step) = p1.pieces.apply(p1PieceCount)
           p1PieceCount += 1
-          // debug
-          // println("feldungerade an der Stelle " + a + step + " " +field(a)(step))
         }
       }
       a += 1
-      //debug
-      // println(a)
     }
 
     // set Stones for player2
@@ -61,26 +57,20 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     var p2PieceCount = 0
     var b = gridSize / 2 + 1
     while (b < gridSize) {
+
       if (b % 2 == 0) {
         for (step <- Range(start = 0, end = gridSize, step = 2)) {
-          grid.field(b)(step) = p2.pieces.apply(p1PieceCount)
+          grid.field(b)(step) = p2.pieces.apply(p2PieceCount)
           p2PieceCount += 1
-          // debug
-          // println("feld an der Stelle " + b + step + " " +field(b)(step))
         }
-
       }
       if (b % 2 == 1) {
         for (step <- Range(start = 1, end = gridSize, step = 2)) {
-          grid.field(b)(step) = p2.pieces.apply(p1PieceCount)
+          grid.field(b)(step) = p2.pieces.apply(p2PieceCount)
           p2PieceCount += 1
-          // debug
-          // println("feldungerade an der Stelle " + b + step + " " +field(b)(step))
         }
       }
       b += 1
-      // debug
-      // println(b)
     }
   }
 
@@ -119,7 +109,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   def getPossibleMoves(piece: Piece): List[(Int, Int)] = {
     var list = new ListBuffer[(Int, Int)]()
 
-    if (piece.player.equals(player1)) {
+    if (piece.player == 1) {
       // Player1 bewegt sich in positive richtung
       if (piece.t == PieceType.Men) {
 
@@ -149,6 +139,10 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
     }
     return list.toList
+  }
+
+  def showGrid(): String = {
+    return grid.toString()
   }
 
   override def isOccupied(grid: Grid): Unit = {}
