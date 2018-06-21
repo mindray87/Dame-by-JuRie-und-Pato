@@ -14,8 +14,8 @@ class PieceSpec extends WordSpec with Matchers {
         val pato = new Player("Pato", grid, Color.White)
         val juri = new Player("Juri", grid, Color.White)
 
-        val whitemen = new Piece(pato, PieceType.Men)
-        val blackking = new Piece(juri, PieceType.King)
+        val whitemen = new Piece(pato.number, PieceType.Men)
+        val blackking = new Piece(juri.number, PieceType.King)
 
         "should be a king" in {
           blackking.t should be(PieceType.King)
