@@ -20,13 +20,11 @@ class PlayerSpec extends WordSpec with Matchers {
       "have a game color" in {
         player.color should be (Color.Black)
       }
-      "have a grid size to create pieces" in {
-
-        player.pieces.length should be(((grid.size - 2) / 2) * (grid.size / 2))
+      "have a list to save pieces" in {
+        player.pieces.length should be(0)
       }
-
-      "have the right number of stones set to the specific gridlayout" in {
-        player.pieces should be(10, 11)
+      "first player should have the number 1" in {
+        player.number should be(1)
       }
 
     }
