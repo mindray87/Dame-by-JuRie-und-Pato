@@ -5,9 +5,10 @@ import de.HTWG.se.Dame.model.{Grid, Piece, Player}
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
-import scala.swing._
+import scala.swing.Publisher
 
 class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends ControllerInterface with Publisher {
+
 
   private val grid: Grid = new Grid(gridSize)
   private val player1: Player = new Player(p1Name, grid, Color.Black, 1)
@@ -75,14 +76,18 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     publish(new UpdateUI)
   }
 
-  def getPiece(x : Int, y : Int): Piece ={
-    return grid.getPiece(x, y)
-  }
+
 
   def showGridNumbers(): String ={
     return grid.showGridNumbers.toString
   }
+  def getPiece(x : Int, y : Int): Piece ={
+    return grid.getPiece(x, y)
+  }
 
+  def getCoordinates(p : Piece): (Int, Int) ={
+    return grid.getCoordinates(p)
+  }
 
   def move(x: Int, y: Int, p: Piece): Boolean = {
     val list = getPossibleMoves(p)
