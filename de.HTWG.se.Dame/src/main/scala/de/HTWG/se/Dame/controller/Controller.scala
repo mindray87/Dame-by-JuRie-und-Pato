@@ -18,6 +18,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   player1.pieces = createPieces(player1)
   player2.pieces = createPieces(player2)
 
+  publish(new UpdateTui)
   start()
 
   override def createPieces(p: Player): mutable.MutableList[Piece] = {
@@ -110,6 +111,10 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   }
 
   def getPossibleMoves(piece: Piece): List[(Int, Int)] = {
+    if(piece == null){
+      return Nil;
+    }
+
     var list = new ListBuffer[(Int, Int)]()
 
     if (piece.player == 1) {
@@ -152,6 +157,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   }
 
   def showGrid(): String = {
+    publish(new UpdateTui)
     return grid.toString()
   }
 
