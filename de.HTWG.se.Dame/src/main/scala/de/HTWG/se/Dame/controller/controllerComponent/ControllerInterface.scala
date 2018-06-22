@@ -3,7 +3,7 @@ package de.HTWG.se.Dame.controller.controllerComponent
 import de.HTWG.se.Dame.model.{Grid, Piece, Player}
 
 import scala.collection.mutable
-
+import scala.swing.event.Event
 
 
 
@@ -23,3 +23,5 @@ trait ControllerInterface {
   def setInitialPiecePosition(p1: Player, p2 : Player) : Unit
   def isOccupied(grid: Grid) : Unit
 }
+
+class UpdateTui extends Event

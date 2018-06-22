@@ -42,14 +42,16 @@ case class Grid(val size: Int) {
   }
 
   def getCoordinates(p: Piece): (Int, Int) = {
-    for (i <- Range(0, field.length)) {
-      for (j <- Range(0, field.length)) {
-        println(i + " " + j)
-        if (field(i)(j) != null)
-          if (field(i)(j) == p) {
-            return (i, j)
-          }
+    var x = 0
+    for (row <- field) {
+      var y = 0
+      for (cell <- row) {
+        if(cell eq p){
+          return (x, y)
+        }
+        y += 1
       }
+      x += 1
     }
     return (-1, -1)
   }
