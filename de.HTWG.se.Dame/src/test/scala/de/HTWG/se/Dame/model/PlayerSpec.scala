@@ -6,28 +6,43 @@ import org.junit.runner.RunWith
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.junit.JUnitRunner
 
+import scala.collection.mutable
+
 @RunWith(classOf[JUnitRunner])
 class PlayerSpec extends WordSpec with Matchers {
   "A Player" when {
     "new" should {
       val controll = new Controller("jul", "pat", 10)
-      val player = controll.getPlayer(1)
+      val player1 = controll.getPlayer(1)
+      val player2 = controll.getPlayer(2)
+      val s = "| O |   | O |   | O |   | O |   | O |   |\n|   | O |   | O |   | O |   | O |   | O |\n| O |   | O |   | O |   | O |   | O |   |\n|   | O |   | O |   | O |   | O |   | O |\n|   |   |   |   |   |   |   |   |   |   |\n|   |   |   |   |   |   |   |   |   |   |\n| X |   | X |   | X |   | X |   | X |   |\n|   | X |   | X |   | X |   | X |   | X |\n| X |   | X |   | X |   | X |   | X |   |\n|   | X |   | X |   | X |   | X |   | X |\n"
       "have a name" in {
-        player.name should be("jul")
+        player1.name should be("jul")
+        player2.name should be("pat")
       }
       "have a nice String representation" in {
-        player.toString should be("jul")
+        player1.toString should be("jul")
+        player2.toString should be("pat")
       }
       "have a game color" in {
-        player.color should be (Color.Black)
+        player1.color should be (Color.Black)
+        player2.color should be (Color.White)
       }
       "have a list to save pieces" in {
-        player.pieces.length should be(20)
+        player1.pieces.length should be(20)
+        player2.pieces.length should be(20)
+      }
+      "have a list to save the pieces" in{
+        player1.pieces.isInstanceOf[mutable.MutableList[_]] should be(true)
       }
       "first player should have the number 1" in {
-        player.number should be(1)
+        player1.number should be(1)
+        player2.number should be(2)
       }
-
+      "should have the instanciated grid" in {
+        controll.showGrid() should be(s)
+       // player2.grid should be(s)
+      }
     }
   }
 }

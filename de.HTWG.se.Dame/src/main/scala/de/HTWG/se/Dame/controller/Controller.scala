@@ -5,9 +5,9 @@ import de.HTWG.se.Dame.model.{Grid, Piece, Player}
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
-import scala.swing._
 
-class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends ControllerInterface  with Publisher{
+
+class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends ControllerInterface {
 
   val grid: Grid = new Grid(gridSize)
   private val player1: Player = new Player(p1Name, grid, Color.Black, 1)
