@@ -5,11 +5,12 @@ import de.HTWG.se.Dame.model.{Grid, Piece, Player}
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
+import scala.swing.Publisher
+
+class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends ControllerInterface with Publisher {
 
 
-class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends ControllerInterface {
-
-  val grid: Grid = new Grid(gridSize)
+  private val grid: Grid = new Grid(gridSize)
   private val player1: Player = new Player(p1Name, grid, Color.Black, 1)
   private val player2: Player = new Player(p2Name, grid, Color.White, 2)
   val pieceCount = ((grid.size - 2) / 2) * (grid.size / 2)
@@ -18,7 +19,6 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   player1.pieces = createPieces(player1)
   player2.pieces = createPieces(player2)
 
-  publish(new UpdateTui)
   start()
 
   override def createPieces(p: Player): mutable.MutableList[Piece] = {
@@ -73,8 +73,21 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
       }
       b += 1
     }
+    publish(new UpdateUI)
   }
 
+
+
+  def showGridNumbers(): String ={
+    return grid.showGridNumbers.toString
+  }
+  def getPiece(x : Int, y : Int): Piece ={
+    return grid.getPiece(x, y)
+  }
+
+  def getCoordinates(p : Piece): (Int, Int) ={
+    return grid.getCoordinates(p)
+  }
 
   def move(x: Int, y: Int, p: Piece): Boolean = {
     val list = getPossibleMoves(p)
@@ -82,6 +95,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
       val n = grid.getCoordinates(p)
       grid.field(n._1)(n._2) = null
       grid.field(x)(y) = p
+      publish(new UpdateUI)
       return true;
     }
     return false;
@@ -98,20 +112,20 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
   }
 
-  def getMessage(): String ={
-    gameState match{
+  def getMessage(): String = {
+    gameState match {
       case GameState.Player1 => return "It's " + player1.name + "'s turn. Please choose a piece."
       case GameState.Player2 => return "It's " + player2.name + "'s turn. Please choose a piece."
     }
 
   }
 
-  def getPossibleMoves(x : Int, y : Int) : List[(Int, Int)] = {
-    return getPossibleMoves(grid.getPiece(x,y))
+  def getPossibleMoves(x: Int, y: Int): List[(Int, Int)] = {
+    return getPossibleMoves(grid.getPiece(x, y))
   }
 
   def getPossibleMoves(piece: Piece): List[(Int, Int)] = {
-    if(piece == null){
+    if (piece == null) {
       return Nil;
     }
 
@@ -125,7 +139,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
         val coo = grid.getCoordinates(piece)
         list += Tuple2(coo._1 + 1, coo._2 + 1)
-        list += Tuple2(coo._1  - 1, coo._2 + 1)
+        list += Tuple2(coo._1 + 1, coo._2 - 1)
       } else {
 
         // Wenn dame dann alle möglichen positionen auf der diagonalen
@@ -139,8 +153,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
         // kontrollieren, ob ein piece geschlagen werden kann
 
         val coo = grid.getCoordinates(piece)
-        println(coo)
-        list += Tuple2(coo._1 + 1, coo._2 + 1)
+        list += Tuple2(coo._1 - 1, coo._2 + 1)
         list += Tuple2(coo._1 - 1, coo._2 - 1)
       } else {
 
@@ -157,14 +170,13 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   }
 
   def showGrid(): String = {
-    publish(new UpdateTui)
     return grid.toString()
   }
 
   def getPlayer(x: Int): Player = {
-    if(x == 1)
+    if (x == 1)
       return player1
-    else if(x == 2)
+    else if (x == 2)
       return player2
     else
       return null
