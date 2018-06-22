@@ -7,7 +7,7 @@ import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.swing._
 
-class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends ControllerInterface  with Publisher{
+class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends ControllerInterface with Publisher {
 
   val grid: Grid = new Grid(gridSize)
   private val player1: Player = new Player(p1Name, grid, Color.Black, 1)
@@ -98,20 +98,20 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
   }
 
-  def getMessage(): String ={
-    gameState match{
+  def getMessage(): String = {
+    gameState match {
       case GameState.Player1 => return "It's " + player1.name + "'s turn. Please choose a piece."
       case GameState.Player2 => return "It's " + player2.name + "'s turn. Please choose a piece."
     }
 
   }
 
-  def getPossibleMoves(x : Int, y : Int) : List[(Int, Int)] = {
-    return getPossibleMoves(grid.getPiece(x,y))
+  def getPossibleMoves(x: Int, y: Int): List[(Int, Int)] = {
+    return getPossibleMoves(grid.getPiece(x, y))
   }
 
   def getPossibleMoves(piece: Piece): List[(Int, Int)] = {
-    if(piece == null){
+    if (piece == null) {
       return Nil;
     }
 
@@ -125,7 +125,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
         val coo = grid.getCoordinates(piece)
         list += Tuple2(coo._1 + 1, coo._2 + 1)
-        list += Tuple2(coo._1  - 1, coo._2 + 1)
+        list += Tuple2(coo._1 + 1, coo._2 - 1)
       } else {
 
         // Wenn dame dann alle möglichen positionen auf der diagonalen
@@ -139,8 +139,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
         // kontrollieren, ob ein piece geschlagen werden kann
 
         val coo = grid.getCoordinates(piece)
-        println(coo)
-        list += Tuple2(coo._1 + 1, coo._2 + 1)
+        list += Tuple2(coo._1 - 1, coo._2 + 1)
         list += Tuple2(coo._1 - 1, coo._2 - 1)
       } else {
 
@@ -162,9 +161,9 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   }
 
   def getPlayer(x: Int): Player = {
-    if(x == 1)
+    if (x == 1)
       return player1
-    else if(x == 2)
+    else if (x == 2)
       return player2
     else
       return null
