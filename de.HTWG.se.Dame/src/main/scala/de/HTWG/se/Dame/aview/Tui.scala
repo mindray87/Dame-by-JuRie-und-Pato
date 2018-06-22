@@ -17,7 +17,7 @@ class Tui(controller: Controller) extends Reactor {
       case _ =>
         val a = input.split(" ")
         a match {
-          case Array("move", row1, col1, row2, col2) => println(controller.move(Integer.valueOf(row2), Integer.valueOf(col2), controller.getPiece(Integer.valueOf(row1), Integer.valueOf(row1))))
+          case Array("move", row1, col1, row2, col2) => move((row1, col1), (row2, col2))
           case Array("choose", row, col) => println(controller.getPossibleMoves(Integer.valueOf(row), Integer.valueOf(col)))
           case _ => println("Cann't handle this.")
         }
@@ -32,5 +32,14 @@ class Tui(controller: Controller) extends Reactor {
     println(controller.showGrid())
   }
 
+  private def move(from : (String, String), to : (String, String)): Unit ={
+    val von = toInt(from)
+    val nach = toInt(to)
+    controller.move(nach._1, nach._2, controller.getPiece(von._1, von._2).get)
+  }
+
+  def toInt(s : (String, String)): (Int, Int) ={
+    return (Integer.valueOf(s._1), Integer.valueOf(s._2))
+  }
 
 }

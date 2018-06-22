@@ -56,8 +56,12 @@ case class Grid(val size: Int) {
     return (-1, -1)
   }
 
-  def getPiece(x: Int, y: Int): Piece = {
-    return field(x)(y)
+  def getPiece(x: Int, y: Int): Option[Piece] = {
+    if(field(x)(y) != null){
+      return Some(field(x)(y))
+    }else{
+      return None
+    }
   }
 }
 
