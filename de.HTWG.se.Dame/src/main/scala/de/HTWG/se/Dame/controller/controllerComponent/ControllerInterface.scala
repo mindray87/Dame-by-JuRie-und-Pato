@@ -8,8 +8,6 @@ import scala.swing.event.Event
 
 
 trait ControllerInterface {
-  def grid : Grid
-
   def createPieces(p: Player) : mutable.MutableList[Piece]
 
   def undo : Unit
@@ -24,4 +22,4 @@ trait ControllerInterface {
   def isOccupied(grid: Grid) : Unit
 }
 
-class UpdateTui extends Event
+class UpdateUI extends Event

@@ -9,7 +9,7 @@ import scala.swing._
 
 class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends ControllerInterface with Publisher {
 
-  val grid: Grid = new Grid(gridSize)
+  private val grid: Grid = new Grid(gridSize)
   private val player1: Player = new Player(p1Name, grid, Color.Black, 1)
   private val player2: Player = new Player(p2Name, grid, Color.White, 2)
   val pieceCount = ((grid.size - 2) / 2) * (grid.size / 2)
@@ -18,7 +18,6 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   player1.pieces = createPieces(player1)
   player2.pieces = createPieces(player2)
 
-  publish(new UpdateTui)
   start()
 
   override def createPieces(p: Player): mutable.MutableList[Piece] = {
@@ -73,6 +72,15 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
       }
       b += 1
     }
+    publish(new UpdateUI)
+  }
+
+  def getPiece(x : Int, y : Int): Piece ={
+    return grid.getPiece(x, y)
+  }
+
+  def showGridNumbers(): String ={
+    return grid.showGridNumbers.toString
   }
 
 
@@ -82,6 +90,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
       val n = grid.getCoordinates(p)
       grid.field(n._1)(n._2) = null
       grid.field(x)(y) = p
+      publish(new UpdateUI)
       return true;
     }
     return false;
@@ -156,7 +165,6 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   }
 
   def showGrid(): String = {
-    publish(new UpdateTui)
     return grid.toString()
   }
 
