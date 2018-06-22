@@ -39,11 +39,14 @@ class PieceSpec extends WordSpec with Matchers {
         }
 
         "new Object should look like this" in {
-          new Piece(player1.number, PieceType.King) should be(Piece(1,PieceType.King))
+          val x = new Piece(player1.number, PieceType.King)
+          x.t should be(PieceType.King)
+          x.player should be(player1.number)
         }
 
-        "Piece of a Player not instanciated" in {
-          player
+        "Piececount of a Player" in {
+          player1.pieces.length should be(20)
+          player2.pieces.length should be(20)
         }
 
       }

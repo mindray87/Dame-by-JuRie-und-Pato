@@ -2,6 +2,7 @@ package de.HTWG.se.Dame.model
 
 import de.HTWG.se.Dame.controller.controllerComponent.Controller
 import de.HTWG.se.Dame.model.enums.Color
+import de.HTWG.se.Dame.model.enums.Color.Color
 import org.junit.runner.RunWith
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.junit.JUnitRunner
@@ -21,7 +22,7 @@ class PlayerSpec extends WordSpec with Matchers {
         player2.name should be("pat")
       }
       "have a nice String representation" in {
-        player1.toString should be("jul")
+        player1.toString should be(player1.name)
         player2.toString should be("pat")
       }
       "have a game color" in {
@@ -39,9 +40,20 @@ class PlayerSpec extends WordSpec with Matchers {
         player1.number should be(1)
         player2.number should be(2)
       }
-      "should have the instanciated grid" in {
-        controll.showGrid() should be(s)
-       // player2.grid should be(s)
+      "the method getPiece should return the asked piece" in {
+        player1.getPiece(1) should be(player1.pieces(1))
+      }
+
+
+      "types" in {
+        player1.name.isInstanceOf[String] should be(true)
+        player1.grid.isInstanceOf[Grid] should be(true)
+        player1.color.isInstanceOf[Color] should be(true)
+        player1.number.isInstanceOf[Int] should be(true)
+      }
+
+      "should be created with the arguments " in {
+
       }
     }
   }
