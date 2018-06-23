@@ -9,19 +9,36 @@ class Tui(controller: Controller) extends Reactor {
 
   listenTo(controller)
 
+
   def processInputLine(input: String): Unit = {
+    var s = ""
     input match {
-      case "show" => println(controller.showGrid())
-      case "info" => println(controller.getMessage())
-      case "q" => println("Goodbye")
+      case "show" => s = controller.showGrid()
+      case "info" => s = controller.getMessage()
+      case "q" => s = "Goodbye"
       case _ =>
-        val a = input.split(" ")
+        val a = input.trim().split(" ")
         a match {
-          case Array("move", row1, col1, row2, col2) => move((row1, col1), (row2, col2))
-          case Array("choose", row, col) => println(controller.getPossibleMoves(Integer.valueOf(row), Integer.valueOf(col)))
-          case _ => println("Cann't handle this.")
+
+          case Array("move", coo1, coo2) =>
+            val src = toIntTuple(coo1)
+            val dest = toIntTuple(coo2)
+            controller.getPiece(src._1, src._2) match {
+              case Some(p) => controller.move(dest._1, dest._2, p); s = "moved " + src + " -> " + dest
+              case _ => s = "No piece at " + src + "."
+            }
+
+          case Array("choose", c) =>
+            val src = toIntTuple(c)
+            controller.getPiece(src) match {
+              case Some(p) => s = controller.showGrid(src, controller.getPossibleMoves(p))
+              case _ => s = "No piece at (" + src + ")."
+            }
+
+          case _ => println("Can't handle this.")
         }
     }
+    println(s)
   }
 
   reactions += {
@@ -32,14 +49,13 @@ class Tui(controller: Controller) extends Reactor {
     println(controller.showGrid())
   }
 
-  private def move(from : (String, String), to : (String, String)): Unit ={
-    val von = toInt(from)
-    val nach = toInt(to)
-    controller.move(nach._1, nach._2, controller.getPiece(von._1, von._2).get)
-  }
-
-  def toInt(s : (String, String)): (Int, Int) ={
-    return (Integer.valueOf(s._1), Integer.valueOf(s._2))
+  def toIntTuple(s: String): (Int, Int) = {
+    if(s.length != 2){
+      // Naja
+      return (0,0)
+    }
+    val arr = s.toCharArray
+    return (Integer.valueOf(arr(0).asDigit), Integer.valueOf(arr(1).asDigit))
   }
 
 }
