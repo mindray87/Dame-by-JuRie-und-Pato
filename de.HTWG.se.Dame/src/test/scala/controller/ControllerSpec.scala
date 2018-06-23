@@ -9,9 +9,14 @@ class ControllerSpec extends WordSpec with Matchers{
     "the destinationcell is empty" should {
       val controller = new Controller("Julian", "Patrick", 8)
       "move" in {
-//        controller.move(4, 4, controller.p1.pieces(0))
- //       val opt = controller.grid.getCell(4, 4)
- //       opt.get.piece should be(Some(controller.p1.pieces(0)))
+        val p= controller.getPiece(2,4).get
+        controller.move(3, 5, p)
+        val opt = controller.getPiece(3, 5)
+        opt.get should be(p)
+      }
+
+      "helper" in {
+        // TODO
       }
     }
   }
