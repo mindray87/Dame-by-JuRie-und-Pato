@@ -40,13 +40,13 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     while (a < (gridSize / 2) - 1) {
       if (a % 2 == 0) {
         for (step <- Range(start = 0, end = gridSize, step = 2)) {
-          grid.field(a)(step) = p1.pieces.apply(p1PieceCount)
+          grid.field(a)(step) = Some(p1.pieces.apply(p1PieceCount))
           p1PieceCount += 1
         }
       }
       if (a % 2 == 1) {
         for (step <- Range(start = 1, end = gridSize, step = 2)) {
-          grid.field(a)(step) = p1.pieces.apply(p1PieceCount)
+          grid.field(a)(step) = Some(p1.pieces.apply(p1PieceCount))
           p1PieceCount += 1
         }
       }
@@ -61,13 +61,13 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
       if (b % 2 == 0) {
         for (step <- Range(start = 0, end = gridSize, step = 2)) {
-          grid.field(b)(step) = p2.pieces.apply(p2PieceCount)
+          grid.field(b)(step) = Some(p2.pieces.apply(p2PieceCount))
           p2PieceCount += 1
         }
       }
       if (b % 2 == 1) {
         for (step <- Range(start = 1, end = gridSize, step = 2)) {
-          grid.field(b)(step) = p2.pieces.apply(p2PieceCount)
+          grid.field(b)(step) = Some(p2.pieces.apply(p2PieceCount))
           p2PieceCount += 1
         }
       }
@@ -85,18 +85,31 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     return grid.getPiece(x, y)
   }
 
-  def getCoordinates(p: Piece): (Int, Int) = {
+  def getPiece(n: (Int, Int)): Option[Piece] = {
+    return grid.getPiece(n._1, n._2)
+  }
+
+  def getCoordinates(p: Piece): Option[(Int, Int)] = {
     return grid.getCoordinates(p)
   }
 
   def move(x: Int, y: Int, p: Piece): Boolean = {
     val list = getPossibleMoves(p)
     if (list.contains(Tuple2(x, y))) {
-      val n = grid.getCoordinates(p)
-      grid.field(n._1)(n._2) = null
-      grid.field(x)(y) = p
-      publish(new UpdateUI)
-      return true;
+      grid.getCoordinates(p) match {
+        case None => return false
+        case Some(n) =>
+          grid.field(n._1)(n._2) = None
+          grid.field(x)(y) = Some(p)
+          for (t <- Range(1, math.abs(n._1 - x))) {
+            grid.field(n._1 + t)(n._2 + t) match {
+              case Some(p) => grid.field(n._1 + t)(n._2 + t) = None
+              case None =>
+            }
+          }
+          publish(new UpdateUI)
+          return true
+      }
     }
     return false;
   }
@@ -130,18 +143,17 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   def getPossibleMoves(piece: Piece): List[(Int, Int)] = {
     var list = new ListBuffer[(Int, Int)]()
 
-    if (piece.player == 1) {
-      // Player1 bewegt sich in positive richtung
+    if (piece.player == 1) {  // Player1 bewegt sich in positive richtung
       if (piece.t == PieceType.Men) {
+        grid.getCoordinates(piece) match {
+          case None =>
+          case Some(coo) =>
+            getPossibleMovesHelper(player1.number, coo._1, coo._2, 1, 1, list)
+            getPossibleMovesHelper(player1.number, coo._1, coo._2, 1, -1, list)
 
-        // kontrollieren, ob ein piece geschlagen werden kann
-
-        val coo = grid.getCoordinates(piece)
-        getPossibleMovesHelper(player1.number, coo._1, coo._2, 1, 1, list)
-        getPossibleMovesHelper(player1.number, coo._1, coo._2, 1, -1, list)
-
-        list += Tuple2(coo._1 + 1, coo._2 + 1)
-        list += Tuple2(coo._1 + 1, coo._2 - 1)
+            list += Tuple2(coo._1 + 1, coo._2 + 1)
+            list += Tuple2(coo._1 + 1, coo._2 - 1)
+        }
       } else {
 
         // Wenn dame dann alle möglichen positionen auf der diagonalen
@@ -151,40 +163,30 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
       // player2 bewegt sich in negative richtung
 
       if (piece.t == PieceType.Men) {
-
-        // kontrollieren, ob ein piece geschlagen werden kann
-
-        val coo = grid.getCoordinates(piece)
-        getPossibleMovesHelper(player2.number, coo._1, coo._2, -1, 1, list)
-        getPossibleMovesHelper(player2.number, coo._1, coo._2, -1, -1, list)
+        grid.getCoordinates(piece) match {
+          case Some(coo) =>
+            getPossibleMovesHelper(player2.number, coo._1, coo._2, -1, 1, list)
+            getPossibleMovesHelper(player2.number, coo._1, coo._2, -1, -1, list)
+          case None =>
+        }
       } else {
 
         // Wenn dame dann alle möglichen positionen auf der diagonalen
-
       }
-
     }
     return list.toList
   }
 
-  private def getPossibleMovesHelper(player : Int, x: Int, y: Int, step_x: Int, step_y: Int, list: mutable.ListBuffer[(Int, Int)]): Unit = {
-    if (outOfBounds((x + step_x, y + step_y))) {
+  private def getPossibleMovesHelper(player: Int, x: Int, y: Int, step_x: Int, step_y: Int, list: mutable.ListBuffer[(Int, Int)]): Unit = {
+    if (grid.outOfBounds((x + step_x, y + step_y))) {
       return
     }
     getPiece(x + step_x, y + step_y) match {
-        // TODO: Bugfix
-      case Some(p) => if(p.player != player) getPossibleMovesHelper(player, x + step_x, y + step_y, step_x, step_y, list)
+      case Some(p) => if (p.player != player) getPossibleMovesHelper(player, x + step_x, y + step_y, step_x, step_y, list)
       case None => list += Tuple2(x + step_x, y + step_y)
     }
   }
 
-  private def outOfBounds(c: (Int, Int)): Boolean = {
-    if (c._1 < 0) return true
-    if (c._1 >= gridSize) return true
-    if (c._2 < 0) return true
-    if (c._2 >= gridSize) return true
-    return false
-  }
 
   def updateGameState(): Unit = {
     // TODO: Implement
@@ -192,6 +194,10 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
   def showGrid(): String = {
     return grid.toString()
+  }
+
+  def showGrid(i: (Int, Int), list: List[(Int, Int)]): String = {
+    return grid.toString(i, list)
   }
 
   def getPlayer(x: Int): Player = {
