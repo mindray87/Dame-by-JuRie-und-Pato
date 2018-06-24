@@ -44,7 +44,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
         for (step <- Range(start = 1, end = gridSize, step = 2)) {
           grid.field(a)(step) = Some(p1.pieces.apply(p1PieceCount))
           p1PieceCount += 1
-        }
+        } //!
       }
       a += 1
     }
@@ -90,6 +90,9 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   }
 
   def move(dest: (Int, Int), p: Piece): Boolean = {
+    if (gameState == GameState.Player1 && p.player != 1) return false;
+    if (gameState == GameState.Player2 && p.player != 2) return false
+
     val list = getPossibleMoves(p)
     if (list.contains(dest)) {
       grid.getCoordinates(p) match {
@@ -115,6 +118,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
             q += step_y
 
           }
+          updateGameState()
           publish(new UpdateUI)
           return true
       }
@@ -223,35 +227,53 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
 
   def updateGameState(): Unit = {
-    // TODO: Implement
-  }
-
-  def showGrid(): String = {
-    return grid.toString()
-  }
-
-  def showGrid(i: (Int, Int), list: List[(Int, Int)]): String = {
-    return grid.toString(i, list)
-  }
-
-  def getPlayer(x: Int): Player = {
-    x match {
-      case 1 => return player1
-      case 2 => return player2
-      case _ => return null
+    if (gameState == GameState.Player1) {
+      gameState = GameState.Player2
+    } else if (gameState == GameState.Player2) {
+      gameState = GameState.Player1
     }
+
+    def showGrid(): String = {
+      return grid.toString()
+    }
+
+    def showGrid(i: (Int, Int), list: List[(Int, Int)]): String = {
+      return grid.toString(i, list)
+    }
+
+    def getPlayer(x: Int): Player = {
+      x match {
+        case 1 => return player1
+        case 2 => return player2
+        case _ => return null
+      }
+    }
+
+    override def isOccupied(grid: Grid): Unit
+
+    =
+    {}
+
+    override def undo: Unit
+
+    =
+    {}
+
+    override def redo: Unit
+
+    =
+    {}
+
+    override def save: Unit
+
+    =
+    {}
+
+    override def load: Unit
+
+    =
+    {}
+
   }
-
-  override def isOccupied(grid: Grid): Unit = {}
-
-  override def undo: Unit = {}
-
-  override def redo: Unit = {}
-
-  override def save: Unit = {}
-
-  override def load: Unit = {}
-
-}
 
 
