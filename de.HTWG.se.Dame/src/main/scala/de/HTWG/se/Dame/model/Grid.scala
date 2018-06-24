@@ -102,6 +102,5 @@ case class Grid(val size: Int) {
     if (c._2 >= field.length) return true
     return false
   }
-
 }
 

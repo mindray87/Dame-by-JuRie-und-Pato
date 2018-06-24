@@ -15,7 +15,7 @@ trait ControllerInterface {
   def save : Unit
   def load : Unit
   def getPlayer(x: Int): Player
-  def move(x: Int, y: Int, p: Piece) : Boolean
+  def move(x: (Int, Int), p: Piece) : Boolean
   def getPossibleMoves(piece : Piece) : List[(Int, Int)]
 
   def setInitialPiecePosition(p1: Player, p2 : Player) : Unit

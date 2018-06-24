@@ -30,10 +30,6 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   }
 
   override def setInitialPiecePosition(p1: Player, p2: Player): Unit = {
-
-    // TODO: Clear the field
-
-
     // set Stones for player1
     var p1PieceCount: Int = 0
     var a = 0
@@ -93,25 +89,45 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     return grid.getCoordinates(p)
   }
 
-  def move(x: Int, y: Int, p: Piece): Boolean = {
+  def move(dest: (Int, Int), p: Piece): Boolean = {
     val list = getPossibleMoves(p)
-    if (list.contains(Tuple2(x, y))) {
+    if (list.contains(dest)) {
       grid.getCoordinates(p) match {
         case None => return false
-        case Some(n) =>
-          grid.field(n._1)(n._2) = None
-          grid.field(x)(y) = Some(p)
-          for (t <- Range(1, math.abs(n._1 - x))) {
-            grid.field(n._1 + t)(n._2 + t) match {
-              case Some(p) => grid.field(n._1 + t)(n._2 + t) = None
-              case None =>
+        case Some(src) =>
+          grid.field(src._1)(src._2) = None
+          grid.field(dest._1)(dest._2) = Some(p)
+
+          val step_x = getStep(src._1, dest._1)
+          val step_y = getStep(src._2, dest._2)
+          var t = src._1 + step_x
+          var q = src._2 + step_y
+
+          for (a <- Range(0, math.abs(src._1 - dest._1) - 1)) {
+
+            grid.field(t)(q) match {
+              case Some(p) => grid.field(t)(q) = None
+              case None => println("no piece on " + t + "," + q)
+              case _ =>
             }
+
+            t += step_x
+            q += step_y
+
           }
           publish(new UpdateUI)
           return true
       }
     }
     return false;
+  }
+
+  private def getStep(s: Int, d: Int): Int = {
+    if (s <= d) {
+      return +1
+    } else {
+      return -1
+    }
   }
 
   def start() = {
@@ -130,7 +146,6 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
       case GameState.Player1 => return "It's " + player1.name + "'s turn. Please choose a piece."
       case GameState.Player2 => return "It's " + player2.name + "'s turn. Please choose a piece."
     }
-
   }
 
   def getPossibleMoves(x: Int, y: Int): List[(Int, Int)] = {
@@ -143,25 +158,20 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   def getPossibleMoves(piece: Piece): List[(Int, Int)] = {
     var list = new ListBuffer[(Int, Int)]()
 
-    if (piece.player == 1) {  // Player1 bewegt sich in positive richtung
+    if (piece.player == 1) { // Player1 bewegt sich in positive richtung
       if (piece.t == PieceType.Men) {
         grid.getCoordinates(piece) match {
           case None =>
           case Some(coo) =>
             getPossibleMovesHelper(player1.number, coo._1, coo._2, 1, 1, list)
             getPossibleMovesHelper(player1.number, coo._1, coo._2, 1, -1, list)
-
-            list += Tuple2(coo._1 + 1, coo._2 + 1)
-            list += Tuple2(coo._1 + 1, coo._2 - 1)
         }
       } else {
 
         // Wenn dame dann alle möglichen positionen auf der diagonalen
 
       }
-    } else {
-      // player2 bewegt sich in negative richtung
-
+    } else { // player2 bewegt sich in negative richtung
       if (piece.t == PieceType.Men) {
         grid.getCoordinates(piece) match {
           case Some(coo) =>
@@ -182,8 +192,32 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
       return
     }
     getPiece(x + step_x, y + step_y) match {
-      case Some(p) => if (p.player != player) getPossibleMovesHelper(player, x + step_x, y + step_y, step_x, step_y, list)
-      case None => list += Tuple2(x + step_x, y + step_y)
+      case Some(p) => if (!possibleJump((x, y), step_x, step_y, player)) return
+      else {
+        if (!possibleJump((x + step_x + step_x, y + step_y + step_y), step_x, step_y, player)) {
+          list += Tuple2(x + step_x + step_x, y + step_y + step_y)
+        } else {
+          getPossibleMovesHelper(player, x + step_x + step_x, y + step_y + step_y, step_x, step_y, list)
+        }
+      }
+      case None =>
+        list += Tuple2(x + step_x, y + step_y)
+    }
+  }
+
+
+  private def possibleJump(src: (Int, Int), step_x: Int, step_y: Int, p_number: Int): Boolean = {
+    // Ist sprung über einen Gegener möglich
+    if (grid.outOfBounds((src._1 + step_x + step_x, src._2 + step_y + step_y))) return false
+    val one = getPiece(src._1 + step_x, src._2 + step_y)
+    val two = getPiece(src._1 + step_x + step_x, src._2 + step_y + step_y)
+    one match {
+      case None => return false
+      case Some(p) =>
+        if (p.player != p_number && two == None)
+          return true
+        else
+          return false
     }
   }
 

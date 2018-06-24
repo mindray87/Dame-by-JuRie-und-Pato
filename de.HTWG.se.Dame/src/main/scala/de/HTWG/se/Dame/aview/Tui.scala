@@ -24,7 +24,11 @@ class Tui(controller: Controller) extends Reactor {
             val src = toIntTuple(coo1)
             val dest = toIntTuple(coo2)
             controller.getPiece(src._1, src._2) match {
-              case Some(p) => controller.move(dest._1, dest._2, p); s = "moved " + src + " -> " + dest
+              case Some(p) =>
+                if (controller.move(dest, p))
+                  s = "moved " + src + " -> " + dest + "."
+                else
+                  s = "can not move to " + dest + "."
               case _ => s = "No piece at " + src + "."
             }
 
@@ -50,9 +54,9 @@ class Tui(controller: Controller) extends Reactor {
   }
 
   def toIntTuple(s: String): (Int, Int) = {
-    if(s.length != 2){
+    if (s.length != 2) {
       // Naja
-      return (0,0)
+      return (0, 0)
     }
     val arr = s.toCharArray
     return (Integer.valueOf(arr(0).asDigit), Integer.valueOf(arr(1).asDigit))
