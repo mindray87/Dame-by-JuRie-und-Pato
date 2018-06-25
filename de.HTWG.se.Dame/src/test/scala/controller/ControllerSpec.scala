@@ -9,7 +9,7 @@ class ControllerSpec extends WordSpec with Matchers {
       val controller = new Controller("Julian", "Patrick", 8)
       "move" in {
         val p = controller.getPiece(2, 4).get
-        controller.move((3, 5), p)
+        controller.move((3, 5), (2, 4))
         val opt = controller.getPiece(3, 5)
         opt.get should be(p)
       }
