@@ -5,23 +5,31 @@ import de.HTWG.se.Dame.model.enums.{Color, PieceType}
 import scala.collection.mutable
 
 case class Grid(val size: Int) {
-  val field = Array.fill[Option[Piece]](size,size)(None)
+  val field = Array.fill[Option[Piece]](size, size)(None)
 
   override def toString: String = {
-    val sb = new mutable.StringBuilder()
+    val sb = new mutable.StringBuilder(" ")
+    for (a <- Range(0, field.length)) sb.append("   ").append(a).append("  ")
+    sb.append("\n")
     for (x <- Range(0, field.length)) {
+      sb.append(x)
       for (y <- Range(0, field.length)) {
         sb.append("| ")
         field(x)(y) match {
           case Some(p) =>
-
             if (p.player == 1) {
-              sb.append("O")
+              if (p.t == PieceType.King)
+                sb.append(" DO")
+              else
+                sb.append(" O ")
             } else {
-              sb.append("X")
+              if (p.t == PieceType.King)
+                sb.append(" DX")
+              else
+                sb.append(" X ")
             }
           case None =>
-            sb.append(" ")
+            sb.append("   ")
         }
         sb.append(" ")
       }
@@ -32,8 +40,11 @@ case class Grid(val size: Int) {
 
 
   def toString(c: (Int, Int), list: List[(Int, Int)]): String = {
-    val sb = new mutable.StringBuilder()
+    val sb = new mutable.StringBuilder(" ")
+    for (a <- Range(0, field.length)) sb.append("   ").append(a).append("  ")
+    sb.append("\n")
     for (x <- Range(0, field.length)) {
+      sb.append(x)
       for (y <- Range(0, field.length)) {
         sb.append("| ")
         field(x)(y) match {
@@ -42,9 +53,15 @@ case class Grid(val size: Int) {
               sb.append(" # ")
             }
             else if (p.player == 1) {
-              sb.append(" O ")
+              if (p.t == PieceType.King)
+                sb.append(" DO")
+              else
+                sb.append(" O ")
             } else {
-              sb.append(" X ")
+              if (p.t == PieceType.King)
+                sb.append(" DX")
+              else
+                sb.append(" X ")
             }
           case None =>
             if (list.contains((x, y))) {
@@ -52,7 +69,6 @@ case class Grid(val size: Int) {
             } else {
               sb.append("   ")
             }
-
         }
         sb.append(" ")
       }
