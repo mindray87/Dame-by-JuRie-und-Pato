@@ -1,6 +1,6 @@
 package de.HTWG.se.Dame.aview
 
-import de.HTWG.se.Dame.controller.controllerComponent.{Controller, UpdateUI}
+import de.HTWG.se.Dame.controller.controllerComponent.{Controller, ErrorEvent, PrintMovesEvent, UpdateEvent}
 
 import scala.swing.Reactor
 
@@ -11,42 +11,29 @@ class Tui(controller: Controller) extends Reactor {
 
 
   def processInputLine(input: String): Unit = {
-    var s = ""
     input match {
-      case "show" => s = controller.showGrid()
-      case "info" => s = controller.getMessage()
-      case "q" => s = "Goodbye"
+      case "info" =>
+      case "q" => println("Goodbye")
       case _ =>
         val a = input.trim().split(" ")
         a match {
 
           case Array("move", coo1, coo2) =>
-            val src = toIntTuple(coo1)
-            val dest = toIntTuple(coo2)
-            controller.getPiece(src._1, src._2) match {
-              case Some(p) =>
-                if (controller.move(dest, p))
-                  s = "moved " + src + " -> " + dest + "."
-                else
-                  s = "can not move to " + dest + "."
-              case _ => s = "No piece at " + src + "."
-            }
+            controller.move(toIntTuple(coo1), toIntTuple(coo2))
 
           case Array("choose", c) =>
-            val src = toIntTuple(c)
-            controller.getPiece(src) match {
-              case Some(p) => s = controller.showGrid(src, controller.getPossibleMoves(p))
-              case _ => s = "No piece at (" + src + ")."
-            }
+              controller.choosePiece(toIntTuple(c))
+
 
           case _ => println("Can't handle this.")
         }
     }
-    println(s)
   }
 
   reactions += {
-    case event: UpdateUI => printTui
+    case _ : UpdateEvent => printTui
+    case e : ErrorEvent => println(e.message)
+    case e : PrintMovesEvent => println(controller.showGrid(e.position, e.moves))
   }
 
   def printTui: Unit = {
