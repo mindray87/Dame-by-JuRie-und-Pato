@@ -9,7 +9,6 @@ import scala.swing.Publisher
 
 class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends ControllerInterface with Publisher {
 
-
   private val grid: Grid = new Grid(gridSize)
   private val player1: Player = new Player(p1Name, grid, Color.Black, 1)
   private val player2: Player = new Player(p2Name, grid, Color.White, 2)
@@ -232,48 +231,34 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     } else if (gameState == GameState.Player2) {
       gameState = GameState.Player1
     }
-
-    def showGrid(): String = {
-      return grid.toString()
-    }
-
-    def showGrid(i: (Int, Int), list: List[(Int, Int)]): String = {
-      return grid.toString(i, list)
-    }
-
-    def getPlayer(x: Int): Player = {
-      x match {
-        case 1 => return player1
-        case 2 => return player2
-        case _ => return null
-      }
-    }
-
-    override def isOccupied(grid: Grid): Unit
-
-    =
-    {}
-
-    override def undo: Unit
-
-    =
-    {}
-
-    override def redo: Unit
-
-    =
-    {}
-
-    override def save: Unit
-
-    =
-    {}
-
-    override def load: Unit
-
-    =
-    {}
-
   }
+
+  def showGrid(): String = {
+    return grid.toString()
+  }
+
+  def showGrid(i: (Int, Int), list: List[(Int, Int)]): String = {
+    return grid.toString(i, list)
+  }
+
+  def getPlayer(x: Int): Player = {
+    x match {
+      case 1 => return player1
+      case 2 => return player2
+      case _ => return null
+    }
+  }
+
+
+  override def undo: Unit = {}
+
+  override def redo: Unit = {}
+
+  override def save: Unit = {}
+
+  override def load: Unit = {}
+
+  override def isOccupied(grid: Grid): Unit = {}
+}
 
 
