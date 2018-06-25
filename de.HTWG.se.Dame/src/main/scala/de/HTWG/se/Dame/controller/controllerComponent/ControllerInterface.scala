@@ -15,11 +15,12 @@ trait ControllerInterface {
   def save : Unit
   def load : Unit
   def getPlayer(x: Int): Player
-  def move(x: (Int, Int), p: Piece) : Boolean
-  def getPossibleMoves(piece : Piece) : List[(Int, Int)]
+  def move(src: (Int, Int), dest: (Int, Int)) : Boolean
 
   def setInitialPiecePosition(p1: Player, p2 : Player) : Unit
   def isOccupied(grid: Grid) : Unit
 }
 
-class UpdateUI extends Event
+class UpdateEvent extends Event
+case class ErrorEvent(message : String) extends Event
+case class PrintMovesEvent(position : (Int, Int), moves : List[(Int, Int)]) extends Event

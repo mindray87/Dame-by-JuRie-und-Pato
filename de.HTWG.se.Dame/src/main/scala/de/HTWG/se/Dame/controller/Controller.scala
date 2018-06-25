@@ -18,7 +18,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   player1.pieces = createPieces(player1)
   player2.pieces = createPieces(player2)
 
-  start()
+  setInitialPiecePosition(player1, player2);
 
   override def createPieces(p: Player): mutable.MutableList[Piece] = {
     var pieces = new mutable.MutableList[Piece]
@@ -68,7 +68,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
       }
       b += 1
     }
-    publish(new UpdateUI)
+    publish(new UpdateEvent)
   }
 
 
@@ -88,9 +88,32 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     return grid.getCoordinates(p)
   }
 
-  def move(dest: (Int, Int), p: Piece): Boolean = {
-    if (gameState == GameState.Player1 && p.player != 1) return false;
-    if (gameState == GameState.Player2 && p.player != 2) return false
+  def choosePiece(position : (Int, Int)): Unit ={
+    getPiece(position) match {
+      case Some(p) => publish(new PrintMovesEvent(position, getPossibleMoves(p)))
+      case _ => publish(new ErrorEvent("No piece on " + position + "."))
+    }
+  }
+
+  def move(src: (Int, Int), dest: (Int, Int)): Boolean = {
+
+    val a = getPiece(src)
+
+    if(a == None){
+      publish(new ErrorEvent("No piece on " + src + "."))
+      return false
+    }
+
+    val p = a.get
+
+    if (gameState == GameState.Player1 && p.player != 1) {
+      publish(new ErrorEvent("It's " + player1.name + "'s turn."))
+      return false
+    }
+    if (gameState == GameState.Player2 && p.player != 2) {
+      publish(new ErrorEvent("It's " + player2.name + "'s turn."))
+      return false
+    }
 
     val list = getPossibleMoves(p)
     if (list.contains(dest)) {
@@ -117,11 +140,16 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
             q += step_y
 
           }
+
+          // Piece become Drought
+          if(dest._1 == 0 || dest._1 == gridSize-1) p.t = PieceType.King
+
           updateGameState()
-          publish(new UpdateUI)
+          publish(new UpdateEvent)
           return true
       }
     }
+    publish(new ErrorEvent("Move from " + src + " to " + dest + " is illegal."))
     return false;
   }
 
@@ -133,17 +161,6 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     }
   }
 
-  def start() = {
-
-    // Gridsize eingeben
-
-    // Name player1 und player2 eingeben
-
-    setInitialPiecePosition(player1, player2);
-
-
-  }
-
   def getMessage(): String = {
     gameState match {
       case GameState.Player1 => return "It's " + player1.name + "'s turn. Please choose a piece."
@@ -151,14 +168,14 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     }
   }
 
-  def getPossibleMoves(x: Int, y: Int): List[(Int, Int)] = {
+  private def getPossibleMoves(x: Int, y: Int): List[(Int, Int)] = {
     getPiece(x, y) match {
       case Some(p) => return getPossibleMoves(p)
       case _ => return Nil
     }
   }
 
-  def getPossibleMoves(piece: Piece): List[(Int, Int)] = {
+  private def getPossibleMoves(piece: Piece): List[(Int, Int)] = {
     var list = new ListBuffer[(Int, Int)]()
 
     if (piece.player == 1) { // Player1 bewegt sich in positive richtung
@@ -237,8 +254,8 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     return grid.toString()
   }
 
-  def showGrid(i: (Int, Int), list: List[(Int, Int)]): String = {
-    return grid.toString(i, list)
+  def showGrid(p : (Int, Int), l : List[(Int, Int)]): String = {
+    return grid.toString(p, l)
   }
 
   def getPlayer(x: Int): Player = {
