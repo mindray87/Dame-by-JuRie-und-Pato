@@ -22,13 +22,13 @@ class PieceSpec extends WordSpec with Matchers {
         val blackmen = new Piece(player2.number, PieceType.Men)
 
         "should be a king" in {
-          blackking.t should be(PieceType.King)
-          whiteking.t should be(PieceType.King)
+          blackking.pieceType should be(PieceType.King)
+          whiteking.pieceType should be(PieceType.King)
         }
 
         "should be a men" in {
-          blackmen.t should be (PieceType.Men)
-          whitemen.t should be (PieceType.Men)
+          blackmen.pieceType should be (PieceType.Men)
+          whitemen.pieceType should be (PieceType.Men)
         }
 
         "should have the given player" in {
@@ -40,7 +40,7 @@ class PieceSpec extends WordSpec with Matchers {
 
         "new Object should look like this" in {
           val x = new Piece(player1.number, PieceType.King)
-          x.t should be(PieceType.King)
+          x.pieceType should be(PieceType.King)
           x.player should be(player1.number)
         }
 

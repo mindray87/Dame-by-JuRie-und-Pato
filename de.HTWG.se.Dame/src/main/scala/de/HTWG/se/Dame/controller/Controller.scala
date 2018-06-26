@@ -7,7 +7,7 @@ import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.swing.Publisher
 
-class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends ControllerInterface with Publisher {
+class Controller(p1Name: String, p2Name: String, gridSize: Int) extends ControllerInterface with Publisher {
 
   private val grid: Grid = new Grid(gridSize)
   private val player1: Player = new Player(p1Name, grid, Color.Black, 1)
@@ -15,12 +15,15 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
   val pieceCount = ((grid.size - 2) / 2) * (grid.size / 2)
   var gameState = GameState.Player1
 
-  player1.pieces = createPieces(player1)
-  player2.pieces = createPieces(player2)
+  def init : Unit = {
+    player1.pieces = createPieces(player1)
+    player2.pieces = createPieces(player2)
 
-  setInitialPiecePosition(player1, player2);
+    setInitialPiecePosition(player1, player2);
+    publish(new UpdateEvent)
+  }
 
-  override def createPieces(p: Player): mutable.MutableList[Piece] = {
+  private def createPieces(p: Player): mutable.MutableList[Piece] = {
     var pieces = new mutable.MutableList[Piece]
     for (a <- 1 to pieceCount) {
       pieces += (new Piece(p.number, PieceType.Men))
@@ -28,7 +31,9 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     return pieces;
   }
 
-  override def setInitialPiecePosition(p1: Player, p2: Player): Unit = {
+  override def getGridSize: Int = return gridSize
+
+  private def setInitialPiecePosition(p1: Player, p2: Player): Unit = {
     // set Stones for player1
     var p1PieceCount: Int = 0
     var a = 0
@@ -68,9 +73,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
       }
       b += 1
     }
-    publish(new UpdateEvent)
   }
-
 
   def showGridNumbers(): String = {
     return grid.showGridNumbers.toString
@@ -100,7 +103,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     val a = getPiece(src)
 
     if(a == None){
-      publish(new ErrorEvent("No piece on " + src + "."))
+      publish(ErrorEvent("No piece on " + src + "."))
       return false
     }
 
@@ -142,7 +145,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
           }
 
           // Piece become Drought
-          if(dest._1 == 0 || dest._1 == gridSize-1) p.t = PieceType.King
+          if(dest._1 == 0 || dest._1 == gridSize-1) p.pieceType = PieceType.King
 
           updateGameState()
           publish(new UpdateEvent)
@@ -161,7 +164,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     }
   }
 
-  def getMessage(): String = {
+  def getMessage: String = {
     gameState match {
       case GameState.Player1 => return "It's " + player1.name + "'s turn. Please choose a piece."
       case GameState.Player2 => return "It's " + player2.name + "'s turn. Please choose a piece."
@@ -179,7 +182,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     var list = new ListBuffer[(Int, Int)]()
 
     if (piece.player == 1) { // Player1 bewegt sich in positive richtung
-      if (piece.t == PieceType.Men) {
+      if (piece.pieceType == PieceType.Men) {
         grid.getCoordinates(piece) match {
           case None =>
           case Some(coo) =>
@@ -192,7 +195,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
       }
     } else { // player2 bewegt sich in negative richtung
-      if (piece.t == PieceType.Men) {
+      if (piece.pieceType == PieceType.Men) {
         grid.getCoordinates(piece) match {
           case Some(coo) =>
             getPossibleMovesHelper(player2.number, coo._1, coo._2, -1, 1, list)
@@ -250,12 +253,16 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
     }
   }
 
-  def showGrid(): String = {
+  def gridToString(): String = {
     return grid.toString()
   }
 
-  def showGrid(p : (Int, Int), l : List[(Int, Int)]): String = {
+  def gridToString(p : (Int, Int), l : List[(Int, Int)]): String = {
     return grid.toString(p, l)
+  }
+
+  def getGrid(): Array[Array[Option[Piece]]] = {
+    return grid.field
   }
 
   def getPlayer(x: Int): Player = {
@@ -275,7 +282,6 @@ class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends Cont
 
   override def load: Unit = {}
 
-  override def isOccupied(grid: Grid): Unit = {}
 }
 
 
