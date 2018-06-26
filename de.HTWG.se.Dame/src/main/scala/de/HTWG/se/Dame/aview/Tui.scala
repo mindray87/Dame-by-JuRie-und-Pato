@@ -1,6 +1,6 @@
 package de.HTWG.se.Dame.aview
 
-import de.HTWG.se.Dame.controller.controllerComponent.{Controller, UpdateUI}
+import de.HTWG.se.Dame.controller.controllerComponent.{Controller, ErrorEvent, PrintMovesEvent, UpdateEvent}
 
 import scala.swing.Reactor
 
@@ -11,26 +11,42 @@ class Tui(controller: Controller) extends Reactor {
 
   def processInputLine(input: String): Unit = {
     input match {
-      case "show" => println(controller.showGrid())
-      case "info" => println(controller.getMessage())
+      case "info" => println(controller.showGridNumbers())
       case "q" => println("Goodbye")
       case _ =>
-        val a = input.split(" ")
+        val a = input.trim().split(" ")
         a match {
-          case Array("move", row1, col1, row2, col2) => println(controller.move(Integer.valueOf(row2), Integer.valueOf(col2), controller.getPiece(Integer.valueOf(row1), Integer.valueOf(row1))))
-          case Array("choose", row, col) => println(controller.getPossibleMoves(Integer.valueOf(row), Integer.valueOf(col)))
-          case _ => println("Cann't handle this.")
+
+          case Array("move", coo1, coo2) =>
+            controller.move(toIntTuple(coo1), toIntTuple(coo2))
+
+          case Array("choose", c) =>
+              controller.choosePiece(toIntTuple(c))
+
+
+          case _ => println("Can't handle this.")
         }
     }
   }
 
   reactions += {
-    case event: UpdateUI => printTui
+    case _ : UpdateEvent => printTui
+    case e : ErrorEvent => println(e.message)
+    case e : PrintMovesEvent => println(controller.showGrid(e.position, e.moves))
   }
 
   def printTui: Unit = {
+    println()
     println(controller.showGrid())
   }
 
+  def toIntTuple(s: String): (Int, Int) = {
+    if (s.length != 2) {
+      // Naja
+      return (0, 0)
+    }
+    val arr = s.toCharArray
+    return (Integer.valueOf(arr(0).asDigit), Integer.valueOf(arr(1).asDigit))
+  }
 
 }

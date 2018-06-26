@@ -16,7 +16,7 @@ object Doughts {
 
     val controll = new Controller("Julian", "Patrick", gridSize)
     val tui = new Tui(controll)
-    println(grid.showGridNumbers)
+
     do {
       print("Your input: ")
       input = readLine()
