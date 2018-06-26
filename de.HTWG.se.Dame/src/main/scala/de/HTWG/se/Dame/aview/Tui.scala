@@ -33,11 +33,11 @@ class Tui(controller: Controller) extends Reactor {
   reactions += {
     case _ : UpdateEvent => printTui
     case e : ErrorEvent => println(e.message)
-    case e : PrintMovesEvent => println(controller.showGrid(e.position, e.moves))
+    case e : PrintMovesEvent => println(controller.gridToString(e.position, e.moves))
   }
 
   def printTui: Unit = {
-    println(controller.showGrid())
+    println(controller.gridToString())
   }
 
   def toIntTuple(s: String): (Int, Int) = {
