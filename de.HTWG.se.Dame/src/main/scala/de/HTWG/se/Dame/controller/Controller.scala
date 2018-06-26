@@ -5,7 +5,8 @@ import de.HTWG.se.Dame.model.{Grid, Piece, Player}
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
-import scala.swing._
+import scala.swing.Publisher
+
 
 class Controller(p1Name: String, p2Name: String, gridSize: Integer) extends ControllerInterface  with Publisher{
 
