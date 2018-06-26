@@ -18,12 +18,12 @@ case class Grid(val size: Int) {
         field(x)(y) match {
           case Some(p) =>
             if (p.player == 1) {
-              if (p.t == PieceType.King)
+              if (p.pieceType == PieceType.King)
                 sb.append(" DO")
               else
                 sb.append(" O ")
             } else {
-              if (p.t == PieceType.King)
+              if (p.pieceType == PieceType.King)
                 sb.append(" DX")
               else
                 sb.append(" X ")
@@ -53,12 +53,12 @@ case class Grid(val size: Int) {
               sb.append(" # ")
             }
             else if (p.player == 1) {
-              if (p.t == PieceType.King)
+              if (p.pieceType == PieceType.King)
                 sb.append(" DO")
               else
                 sb.append(" O ")
             } else {
-              if (p.t == PieceType.King)
+              if (p.pieceType == PieceType.King)
                 sb.append(" DX")
               else
                 sb.append(" X ")
