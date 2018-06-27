@@ -91,7 +91,7 @@ class Controller(p1Name: String, p2Name: String, gridSize: Int) extends Controll
     return grid.getCoordinates(p)
   }
 
-  def choosePiece(position: (Int, Int)): Unit = {
+  def choosePiece(position : (Int, Int)): Unit ={
     getPiece(position) match {
       case Some(p) => publish(new PrintMovesEvent(position, getPossibleMoves(p)))
       case _ => publish(new ErrorEvent("No piece on " + position + "."))
@@ -269,7 +269,6 @@ class Controller(p1Name: String, p2Name: String, gridSize: Int) extends Controll
   }
 
   def gridToString(p : (Int, Int), l : List[(Int, Int)]): String = {
-
     return grid.toString(p, l)
   }
 

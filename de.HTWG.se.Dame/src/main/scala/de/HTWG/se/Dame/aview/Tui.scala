@@ -9,6 +9,7 @@ class Tui(controller: Controller) extends Reactor {
 
   listenTo(controller)
 
+
   def processInputLine(input: String): Unit = {
     input match {
       case "info" => println(controller.showGridNumbers())
