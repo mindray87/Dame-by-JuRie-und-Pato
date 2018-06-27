@@ -1,12 +1,9 @@
 language: scala
 
-jdk: oraclejdk8
+script: "sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport"
 
-scala: 
+scala:
   - 2.12.4
 
-script:
-- sbt clean coverage test
-
-after_success:
-  - sbt coverageReport 
+jdk:
+  - oraclejdk8
