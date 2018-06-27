@@ -3,7 +3,7 @@ package de.HTWG.se.Dame.aview
 import java.awt.Color
 
 import de.HTWG.se.Dame.controller.controllerComponent._
-import de.HTWG.se.Dame.model.enums.PieceType
+import de.HTWG.se.Dame.model.enums.{PieceType}
 
 import scala.swing.{Frame, Reactor, TextField, _}
 import scala.swing.Swing.EmptyBorder
@@ -14,8 +14,10 @@ class CellClicked(val row: Int, val column: Int) extends Event
 class Gui(controller: Controller) extends Frame {
 
   listenTo(controller)
-
   title = "HTWG Dame"
+
+  var choosed: Option[(Int, Int)] = None
+  var moves: List[(Int, Int)] = Nil
 
   val gridPanel = new GridPanel(controller.getGridSize, controller.getGridSize) {
     border = EmptyBorder(0)
@@ -26,7 +28,7 @@ class Gui(controller: Controller) extends Frame {
     var y = 0
     for (row <- controller.getGrid()) {
       n = n * -1
-      for (cell <- row) {
+      for (_ <- row) {
         val l = new TextField()
         l.border = EmptyBorder(0)
         l.horizontalAlignment = Alignment.Center
@@ -34,10 +36,9 @@ class Gui(controller: Controller) extends Frame {
         l.editable = false
         l.listenTo(l.mouse.clicks)
         l.name = "" + x + y
-        println("name = " + l.name)
         l.reactions += {
           case e: MouseClicked =>
-            choose(e.source.asInstanceOf[TextField])
+            clicked(e.source.asInstanceOf[TextField])
         }
         if (n == 1) {
           l.foreground = Color.WHITE
@@ -87,61 +88,98 @@ class Gui(controller: Controller) extends Frame {
         controller.redo
       })
     }
+  }
 
+  def handleError(message: String): Unit = {
+    resetTiles
+    statusline.text_=(message)
   }
 
   reactions += {
     case _: UpdateEvent => updateGUI
-    case e: ErrorEvent => println(e.message)
+    case e: ErrorEvent => handleError(e.message)
     case e: PrintMovesEvent => displayMoves(e.position, e.moves)
   }
 
   visible = true
 
-  def choose(tf: TextField) : Unit = {
+  def clicked(tf: TextField): Unit = {
     val name = tf.name
-    val tu = (name(0).asDigit.toInt, name(1).asDigit.toInt)
-    println("pressed: " + tu)
-    controller.choosePiece(tu)
+    val tuple = (name(0).asDigit.toInt, name(1).asDigit.toInt)
+
+    choosed match {
+      case Some(c) =>
+        if (moves.contains(tuple)) {
+          controller.move(c, tuple)
+        } else
+          controller.choosePiece(tuple)
+
+      case None =>
+        controller.choosePiece(tuple)
+    }
   }
 
-  def displayMoves(position : (Int, Int), moves : List[(Int, Int)]): Unit ={
-    for (a <- gridPanel.contents){
-      if(a.name(0).asDigit.toInt == position._1 && a.name(1).asDigit.toInt == position._2)
-        a.background = Color.yellow
+  def displayMoves(position: (Int, Int), moves: List[(Int, Int)]): Unit = {
+    resetTiles
+    this.moves = moves
+    this.choosed = Some(position)
+    for (a <- gridPanel.contents) {
+      val b = (a.name(0).asDigit.toInt, a.name(1).asDigit.toInt)
+      if (b == position)
+        a.background = Color.GRAY
+      else
+        for (p <- moves) {
+          if (b == p) {
+            a.background = Color.DARK_GRAY
+          }
+        }
+    }
+  }
+
+  def resetTiles: Unit = {
+    var i = 1
+    var n = 0
+    for (_ <- 0 to controller.getGridSize - 1) {
+      for (_ <- 0 to controller.getGridSize - 1) {
+        if (i == 1) {
+          gridPanel.contents(n).background = Color.BLACK
+        } else {
+          gridPanel.contents(n).background = Color.WHITE
+        }
+        n += 1
+        i *= -1
+      }
+      i *= -1
     }
   }
 
   private def updateGUI: Unit = {
+    choosed = None
+    moves = Nil
     var i = 0
     for (row <- controller.getGrid()) {
       for (cell <- row) {
 
-        val l = gridPanel.contents.apply(i).asInstanceOf[swing.TextField]
+        val txtField = gridPanel.contents.apply(i).asInstanceOf[swing.TextField]
 
         cell match {
           case Some(p) =>
             if (p.player == 1 && p.pieceType == PieceType.Men) {
-              l.text = "O"
-              l.text_=("o")
+              txtField.text = "O"
             } else if (p.player == 1 && p.pieceType == PieceType.King) {
-              l.text = "DO"
+              txtField.text = "DO"
             } else if (p.player == 2 && p.pieceType == PieceType.Men) {
-              l.text = "X"
+              txtField.text = "X"
             } else if (p.player == 2 && p.pieceType == PieceType.King) {
-              l.text = "DX"
+              txtField.text = "DX"
             }
-          case None =>
+          case None => txtField.text = ""
         }
 
         i += 1
       }
     }
     repaint()
+    resetTiles
   }
-
-}
-
-class ClickEvent extends Event(){
-
 }
