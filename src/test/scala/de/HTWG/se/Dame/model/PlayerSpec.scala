@@ -14,6 +14,7 @@ class PlayerSpec extends WordSpec with Matchers {
   "A Player" when {
     "new" should {
       val controll = new Controller("jul", "pat", 10)
+      controll.init
       val player1 = controll.getPlayer(1)
       val player2 = controll.getPlayer(2)
       val s = "| O |   | O |   | O |   | O |   | O |   |\n|   | O |   | O |   | O |   | O |   | O |\n| O |   | O |   | O |   | O |   | O |   |\n|   | O |   | O |   | O |   | O |   | O |\n|   |   |   |   |   |   |   |   |   |   |\n|   |   |   |   |   |   |   |   |   |   |\n| X |   | X |   | X |   | X |   | X |   |\n|   | X |   | X |   | X |   | X |   | X |\n| X |   | X |   | X |   | X |   | X |   |\n|   | X |   | X |   | X |   | X |   | X |\n"

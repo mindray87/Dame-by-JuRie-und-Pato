@@ -12,6 +12,7 @@ class PieceSpec extends WordSpec with Matchers {
     "instanciated" should {
       "be created with the player owning the figure and the type" should {
         val controll = new Controller("jul", "pat", 10)
+        controll.init
         val player1 = controll.getPlayer(1)
         val player2 = controll.getPlayer(2)
 
