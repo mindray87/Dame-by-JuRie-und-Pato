@@ -8,7 +8,8 @@ import scala.swing.event.Event
 
 
 trait ControllerInterface {
-  def createPieces(p: Player) : mutable.MutableList[Piece]
+  def getGridSize: Int
+
 
   def undo : Unit
   def redo : Unit
@@ -16,9 +17,6 @@ trait ControllerInterface {
   def load : Unit
   def getPlayer(x: Int): Player
   def move(src: (Int, Int), dest: (Int, Int)) : Boolean
-
-  def setInitialPiecePosition(p1: Player, p2 : Player) : Unit
-  def isOccupied(grid: Grid) : Unit
 }
 
 class UpdateEvent extends Event

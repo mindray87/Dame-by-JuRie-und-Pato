@@ -4,6 +4,6 @@ import de.HTWG.se.Dame.model.enums.PieceType.PieceType
 
 
 
-case class Piece(player: Int, var t: PieceType) {
+case class Piece(player: Int, var pieceType: PieceType) {
 
 }
