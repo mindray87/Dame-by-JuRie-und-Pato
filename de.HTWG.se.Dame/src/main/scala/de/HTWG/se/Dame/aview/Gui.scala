@@ -6,8 +6,8 @@ import de.HTWG.se.Dame.controller.controllerComponent._
 import de.HTWG.se.Dame.model.enums.PieceType
 
 import scala.swing.{Frame, Reactor, TextField, _}
-import scala.swing.Swing.LineBorder
-import scala.swing.event.{Event, Key}
+import scala.swing.Swing.EmptyBorder
+import scala.swing.event.{Event, Key, MouseClicked}
 
 class CellClicked(val row: Int, val column: Int) extends Event
 
@@ -17,20 +17,28 @@ class Gui(controller: Controller) extends Frame {
 
   title = "HTWG Dame"
 
-  def gridPanel = new GridPanel(controller.getGridSize, controller.getGridSize) {
-    border = LineBorder(java.awt.Color.BLACK, 2)
+  val gridPanel = new GridPanel(controller.getGridSize, controller.getGridSize) {
+    border = EmptyBorder(0)
     background = java.awt.Color.BLACK
 
     var n = -1
-
+    var x = 0
+    var y = 0
     for (row <- controller.getGrid()) {
       n = n * -1
-      for (_ <- row) {
-        val l = new TextField("dasdas")
-
+      for (cell <- row) {
+        val l = new TextField()
+        l.border = EmptyBorder(0)
         l.horizontalAlignment = Alignment.Center
         l.preferredSize = new Dimension(50, 50)
-
+        l.editable = false
+        l.listenTo(l.mouse.clicks)
+        l.name = "" + x + y
+        println("name = " + l.name)
+        l.reactions += {
+          case e: MouseClicked =>
+            choose(e.source.asInstanceOf[TextField])
+        }
         if (n == 1) {
           l.foreground = Color.WHITE
           l.background = Color.BLACK
@@ -40,7 +48,10 @@ class Gui(controller: Controller) extends Frame {
         }
         n = n * -1
         contents += l
+        y += 1
       }
+      x += 1
+      y = 0
     }
   }
 
@@ -80,22 +91,33 @@ class Gui(controller: Controller) extends Frame {
   }
 
   reactions += {
-    case _: UpdateEvent => redraw
+    case _: UpdateEvent => updateGUI
     case e: ErrorEvent => println(e.message)
-    case e: PrintMovesEvent => println(controller.gridToString(e.position, e.moves))
+    case e: PrintMovesEvent => displayMoves(e.position, e.moves)
   }
 
   visible = true
 
+  def choose(tf: TextField) : Unit = {
+    val name = tf.name
+    val tu = (name(0).asDigit.toInt, name(1).asDigit.toInt)
+    println("pressed: " + tu)
+    controller.choosePiece(tu)
+  }
 
-  private def redraw: Unit = {
+  def displayMoves(position : (Int, Int), moves : List[(Int, Int)]): Unit ={
+    for (a <- gridPanel.contents){
+      if(a.name(0).asDigit.toInt == position._1 && a.name(1).asDigit.toInt == position._2)
+        a.background = Color.yellow
+    }
+  }
 
+  private def updateGUI: Unit = {
     var i = 0
-
     for (row <- controller.getGrid()) {
       for (cell <- row) {
 
-        val l : TextField = gridPanel.contents.apply(i).asInstanceOf[swing.TextField]
+        val l = gridPanel.contents.apply(i).asInstanceOf[swing.TextField]
 
         cell match {
           case Some(p) =>
@@ -115,8 +137,11 @@ class Gui(controller: Controller) extends Frame {
         i += 1
       }
     }
-    this.repaint
-    this.redraw
+    repaint()
   }
+
+}
+
+class ClickEvent extends Event(){
 
 }
