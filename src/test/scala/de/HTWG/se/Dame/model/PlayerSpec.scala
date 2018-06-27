@@ -40,10 +40,6 @@ class PlayerSpec extends WordSpec with Matchers {
         player1.number should be(1)
         player2.number should be(2)
       }
-      "the method getPiece should return the asked piece" in {
-        player1.getPiece(1) should be(player1.pieces(1))
-      }
-
 
       "types" in {
         player1.name.isInstanceOf[String] should be(true)
