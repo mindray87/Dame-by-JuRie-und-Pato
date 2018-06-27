@@ -4,3 +4,9 @@ jdk: oraclejdk8
 
 scala: 
   - 2.12.4
+
+script:
+- sbt clean coverage test coverageReport
+
+after_success:
+  - sbt coverageReport coveralls
