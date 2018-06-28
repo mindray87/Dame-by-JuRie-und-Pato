@@ -41,6 +41,7 @@ class GridSpec extends WordSpec with Matchers {
       controll.getPiece(5,5) should be (None)
       controll.getPiece(0,0).get should be (Piece(1,PieceType.Men))
     }
+    // TODO toString mit Parameter
   }
 }
 
